@@ -12,7 +12,7 @@
 
 $taskName    = 'CursorConfigAutoSync'
 $scriptPath  = Join-Path $env:USERPROFILE '.cursor\scripts\auto-sync.ps1'
-$intervalMin = 15
+$intervalMin = 120
 
 if (-not (Test-Path $scriptPath)) {
     Write-Error "Sync script not found: $scriptPath"
@@ -50,12 +50,13 @@ Register-ScheduledTask `
     -Action $action `
     -Trigger $trigger `
     -Settings $settings `
-    -Description "Auto-sync %USERPROFILE%\.cursor to GitHub every $intervalMin minutes." `
+    -Description "Auto-sync %USERPROFILE%\.cursor to GitHub at a regular interval." `
     -RunLevel Limited | Out-Null
 
 Write-Host ""
+$intervalHuman = if ($intervalMin -lt 60) { "$intervalMin minutes" } else { "$($intervalMin / 60) hours" }
 Write-Host "[OK] Registered scheduled task: $taskName"
-Write-Host "  - Runs every $intervalMin minutes"
+Write-Host "  - Runs every $intervalHuman"
 Write-Host "  - Also runs at user logon"
 Write-Host "  - Log file: %USERPROFILE%\.cursor\.sync.log"
 Write-Host ""
