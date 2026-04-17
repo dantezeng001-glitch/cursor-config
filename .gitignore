@@ -25,6 +25,10 @@
 !commands/
 !commands/**
 
+# 自动同步脚本（含 install-auto-sync.ps1）
+!scripts/
+!scripts/**
+
 # ---- 元数据 ----
 !.gitignore
 !README.md
