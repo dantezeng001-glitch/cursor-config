@@ -11,6 +11,22 @@ Unified skill for binary-document ↔ Markdown conversion and post-processing. T
 - **MD → DOCX / PDF**: Convert Markdown files to formatted Word documents or PDF files
 - **MD Post-Processing**: Audit for empty files, OCR re-extract image-based documents, clean encoding artifacts, join broken lines, and optimize readability
 
+---
+
+## ⚠️ 交付前硬约束（Delivery Hard Constraint）
+
+**任何** binary → MD 转换，无论是用 `tools/file_sync.py` 正式管线、还是临时写的一次性内联脚本，交付给用户前**必须**跑完以下顺序，一步不能跳：
+
+1. Step 0：空页 / 图片页 OCR 重抽（Part C）
+2. Step 1：字符清洗 `md_cleanup.py`（Part C）
+3. Step 1.5：断行合并 `md_line_join.py`（PDF 类来源必做；Part C）
+4. **Step 2：语义重排**（命中触发条件时必做；Part C）
+5. Step 3：最终验证审计（Part C）
+
+**只做 Step 0 就交付 = 流程违规。** 用户不需要提醒 "可读性高一点"，Step 2 由触发条件决定，不是由用户提醒决定。
+
+内联脚本不是绕过 Part C 的借口——脚本只负责"怎么抽"，后续 5 步一条不能少。
+
 ## When To Use
 
 - User asks to read, summarize, or analyze a PDF, PPT, PPTX, DOCX, XLSX, or XLSM file
@@ -80,6 +96,8 @@ Unified skill for binary-document ↔ Markdown conversion and post-processing. T
 5. **Run sync**: `python "tools/document_sync.py"` and/or `python "tools/excel_sync.py"`
 
 6. **Verify**: Check that `index.md` was generated; summarize what was tracked.
+
+7. **→ 进入 Part C，不得直接交付。** Part A 产出的是"抽出来的原始 MD"，不是"可交付的 MD"。Part C 的 Step 0→1→1.5→2→3 是交付前的硬性后处理链，参见文档顶部"交付前硬约束"。
 
 ### Operating Rules
 
@@ -298,15 +316,15 @@ A file needs line joining when it matches ANY of:
 
 ### Step 2: AI-Guided Format Optimization
 
-When a synced MD file contains `## Page` or `## Slide` headings (indicating raw extraction output), or when the user asks to "improve readability" / "reformat" / "整理格式", apply these restructuring rules:
+#### MUST trigger（不是"建议"，是"必须"）
 
-#### Detection
+满足以下**任意一条**，agent 必须立即执行本步骤，不得等用户提醒：
 
-A file needs format optimization when it matches ANY of:
+- 文件含 3+ 个 `## Page \d+` 或 `## Slide \d+:` 标题
+- 所有正文行以 `- ` 开头（扁平 PPTX 提取）
+- 用户显式要求 "improve readability" / "reformat" / "整理格式" / "可读性"
 
-- Contains 3+ headings matching `## Page \d+` or `## Slide \d+:`
-- Every content line starts with `- ` (flat PPTX extraction)
-- User explicitly requests readability improvement
+命中即触发。**不触发任何一条才允许跳过本步骤。**
 
 #### Restructuring Rules
 

@@ -1,47 +1,43 @@
-# ============================================================
-# .cursor 云备份策略：白名单式，只同步"创作资产"
-# 不同步的是什么：每个项目的 agent-transcripts / terminals /
-# mcps 缓存 / plugins 缓存 / subagents 状态 —— 这些都是 Cursor
-# 运行时自动生成、换 PC 后会重新生成的临时状态，无需云同步。
-# ============================================================
-
-# 默认忽略一切
+# Ignore everything in .cursor
 *
-
-# ---- 核心创作资产 ----
-# 全局规则
-!rules/
-!rules/**
-
-# 用户自定义技能
-!skills/
-!skills/**
-
-# Cursor 内置技能的本地副本（含自写的 skill-cursor 工具）
+# Un-ignore projects so we can descend to allowlisted subdirs
+!projects/
+projects/*
+!projects/*/
+projects/*/*
+# MCP tool descriptors, resources, prompts
+!projects/*/mcps/
+!projects/*/mcps/**
+# Agent transcripts for citation
+!projects/*/agent-transcripts/
+!projects/*/agent-transcripts/**
+# Terminal output files
+!projects/*/terminals/
+!projects/*/terminals/**
+# Conversation notes (shared scratchpad)
+!projects/*/agent-notes/
+!projects/*/agent-notes/**
+# Large tool output files
+!projects/*/agent-tools/
+!projects/*/agent-tools/**
+# Plugin cache (rules, skills, agents)
+!plugins/
+!plugins/**
+# Built-in Cursor skills
 !skills-cursor/
 !skills-cursor/**
-
-# 用户自定义斜杠命令
+# User's personal skills
+!skills/
+!skills/**
+# User's personal slash commands
 !commands/
 !commands/**
-
-# 自动同步脚本（含 install-auto-sync.ps1）
-!scripts/
-!scripts/**
-
-# ---- 元数据 ----
-!.gitignore
-!README.md
-
-# ---- 显式排除 ----
-# 即使上面的白名单打开，也不要同步以下（防御性）
-ide_state.json
-argv.json
-blocklist
-unified_repo_list.json
-extensions/
-ai-tracking/
-projects/
-plugins/
-subagents/
-plans/
+# User's plan files
+!plans/
+!plans/**
+# Subagent state/transcripts
+!subagents/
+!subagents/**
+# User-level cursor rules
+!rules/
+!rules/**
