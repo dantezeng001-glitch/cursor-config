@@ -1,11 +1,13 @@
 # ============================================================
-# 一次性安装：把 auto-sync.ps1 注册为 Windows 计划任务
-# 用法：
-#   以当前用户身份（不需要管理员）在 PowerShell 里直接跑一次：
-#     powershell -NoProfile -ExecutionPolicy Bypass -File
-#       "$env:USERPROFILE\.cursor\scripts\install-auto-sync.ps1"
-# 卸载：
-#     Unregister-ScheduledTask -TaskName "CursorConfigAutoSync" -Confirm:$false
+# One-time installer: registers auto-sync.ps1 as a Windows
+# Scheduled Task that runs every 15 minutes under the current
+# user. Does not require admin rights.
+#
+# Run:
+#   powershell -NoProfile -ExecutionPolicy Bypass -File `
+#     "$env:USERPROFILE\.cursor\scripts\install-auto-sync.ps1"
+# Uninstall:
+#   Unregister-ScheduledTask -TaskName CursorConfigAutoSync -Confirm:$false
 # ============================================================
 
 $taskName    = 'CursorConfigAutoSync'
@@ -13,24 +15,21 @@ $scriptPath  = Join-Path $env:USERPROFILE '.cursor\scripts\auto-sync.ps1'
 $intervalMin = 15
 
 if (-not (Test-Path $scriptPath)) {
-    Write-Error "找不到同步脚本：$scriptPath"
+    Write-Error "Sync script not found: $scriptPath"
     exit 1
 }
 
-# 若已存在同名任务先删
 $existing = Get-ScheduledTask -TaskName $taskName -ErrorAction SilentlyContinue
 if ($existing) {
     Unregister-ScheduledTask -TaskName $taskName -Confirm:$false
-    Write-Host "已删除旧任务 $taskName，将重新注册"
+    Write-Host "Removed existing task $taskName, re-registering..."
 }
 
 $action = New-ScheduledTaskAction `
     -Execute 'powershell.exe' `
     -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$scriptPath`""
 
-# 登录时立即开始，然后每 15 分钟跑一次，持续有效
-$trigger = New-ScheduledTaskTrigger `
-    -AtLogOn
+$trigger = New-ScheduledTaskTrigger -AtLogOn
 
 $trigger.Repetition = (New-ScheduledTaskTrigger `
     -Once -At (Get-Date) `
@@ -49,20 +48,20 @@ Register-ScheduledTask `
     -Action $action `
     -Trigger $trigger `
     -Settings $settings `
-    -Description "每 $intervalMin 分钟把 %USERPROFILE%\.cursor\ 的改动自动 commit + push 到 GitHub" `
+    -Description "Auto-sync %USERPROFILE%\.cursor to GitHub every $intervalMin minutes." `
     -RunLevel Limited | Out-Null
 
 Write-Host ""
-Write-Host "已注册计划任务：$taskName"
-Write-Host "  - 每 $intervalMin 分钟自动同步一次"
-Write-Host "  - 开机/登录时立即跑一次"
-Write-Host "  - 日志写到 %USERPROFILE%\.cursor\.sync.log"
+Write-Host "[OK] Registered scheduled task: $taskName"
+Write-Host "  - Runs every $intervalMin minutes"
+Write-Host "  - Also runs at user logon"
+Write-Host "  - Log file: %USERPROFILE%\.cursor\.sync.log"
 Write-Host ""
-Write-Host "可以手动触发一次测试："
+Write-Host "Run once manually to test:"
 Write-Host "  Start-ScheduledTask -TaskName $taskName"
 Write-Host ""
-Write-Host "查看最近日志："
-Write-Host "  Get-Content `"`$env:USERPROFILE\.cursor\.sync.log`" -Tail 20"
+Write-Host "Tail log:"
+Write-Host '  Get-Content "$env:USERPROFILE\.cursor\.sync.log" -Tail 20'
 Write-Host ""
-Write-Host "卸载："
-Write-Host "  Unregister-ScheduledTask -TaskName $taskName -Confirm:`$false"
+Write-Host "Uninstall:"
+Write-Host '  Unregister-ScheduledTask -TaskName CursorConfigAutoSync -Confirm:$false'
