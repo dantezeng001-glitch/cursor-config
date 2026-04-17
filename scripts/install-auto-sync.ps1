@@ -29,12 +29,14 @@ $action = New-ScheduledTaskAction `
     -Execute 'powershell.exe' `
     -Argument "-NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File `"$scriptPath`""
 
-$trigger = New-ScheduledTaskTrigger -AtLogOn
-
-$trigger.Repetition = (New-ScheduledTaskTrigger `
-    -Once -At (Get-Date) `
+$triggerTime = New-ScheduledTaskTrigger `
+    -Once -At (Get-Date).AddSeconds(30) `
     -RepetitionInterval (New-TimeSpan -Minutes $intervalMin) `
-    -RepetitionDuration ([TimeSpan]::FromDays(3650))).Repetition
+    -RepetitionDuration ([TimeSpan]::FromDays(3650))
+
+$triggerLogon = New-ScheduledTaskTrigger -AtLogOn
+
+$trigger = @($triggerTime, $triggerLogon)
 
 $settings = New-ScheduledTaskSettingsSet `
     -AllowStartIfOnBatteries `
