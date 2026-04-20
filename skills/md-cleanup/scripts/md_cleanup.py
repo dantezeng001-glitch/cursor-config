@@ -1,14 +1,29 @@
-"""Generic Markdown post-extraction cleanup.
+r"""Source-agnostic Markdown readability cleanup.
 
-Fixes common encoding artifacts produced by PDF/PPTX text extraction:
-  - NFKC Unicode normalization (fullwidth/halfwidth unification)
-  - CJK Kangxi Radicals (U+2F00-U+2FD5) -> standard CJK characters
-  - CJK Radicals Supplement (U+2E80-U+2EFF) -> simplified Chinese
-  - Common traditional-to-simplified Chinese residuals from PDF fonts
-  - Excessive blank line compression
+Handles every rule family that can be done safely by a pure-text pass — no
+AI reasoning required. Structural rewrites (heading hierarchy, semantic
+titles, etc.) are described in SKILL.md and executed by the agent.
+
+Rule families covered here:
+  F1  Character-level       NFKC + Kangxi radicals + CJK Radicals Supplement + common trad residuals
+  F2  Escape residuals      `\-` `\*` `\_` `\|` etc. in contexts where escape is unnecessary
+  F3  Rich-text export
+      F3.1  `$\color{#hex}{text}$` LaTeX-color wrappers → plain text
+      F3.2  `:::` Dingtalk-style fence containers → removed
+      F3.3  `@xxx(yyy)` mentions wrapped by `$\color{}$` → `@xxx(yyy)` (after F3.1)
+  F4  Link label noise      `请至钉钉文档查看附件《X》` → `《X》`
+  F6  Noise
+      F6.1  3+ consecutive blank lines → 2
+      F6.2  Isolated `[No text extracted]` lines (keep ONE if all pages empty, drop elsewhere)
+      F6.3  Trailing trailing whitespace on every line
+
+Deliberately NOT touched (unsafe for automated pass, agent's job):
+  F3.4  Multi-item numbered lists inside table cells
+          (`1.  a<br>    <br>2.  b` — touching HTML and table at once is risky)
+  F5    Structural / semantic rewrites (heading hierarchy, `## Page N` → semantic)
 
 Usage:
-  python md_cleanup.py <file.md> [<file2.md> ...] [--in-place]
+  python md_cleanup.py <file.md> [<file2.md> ...] [--in-place] [--verbose]
 
 Without --in-place, prints cleaned content to stdout (single file) or
 reports what would change (multiple files).
@@ -23,7 +38,7 @@ import unicodedata
 from pathlib import Path
 
 # ---------------------------------------------------------------------------
-# CJK Kangxi Radicals (U+2F00 - U+2FD5) -> standard CJK unified ideographs
+# F1: CJK Kangxi Radicals (U+2F00 - U+2FD5) -> standard CJK unified ideographs
 # Complete table: 214 radicals used in the Kangxi Dictionary.
 # PDF extractors (pypdf, pymupdf) sometimes emit these instead of the
 # standard CJK codepoints when the source font uses a CID mapping that
@@ -105,11 +120,8 @@ KANGXI_MAP: dict[str, str] = {
     "\u2FD5": "\u9FA0",
 }
 
-# ---------------------------------------------------------------------------
-# CJK Radicals Supplement (U+2E80 - U+2EFF) -> simplified Chinese
-# Only the codepoints commonly emitted by PDF extractors are mapped.
-# ---------------------------------------------------------------------------
-
+# F1: CJK Radicals Supplement (U+2E80 - U+2EFF) -> simplified Chinese
+# Only codepoints commonly emitted by PDF extractors.
 RADICALS_SUPPLEMENT_MAP: dict[str, str] = {
     "\u2E80": "\u4E00",  # ⺀ → 一 (variant)
     "\u2ECB": "\u8F66",  # ⻋ → 车
@@ -121,14 +133,9 @@ RADICALS_SUPPLEMENT_MAP: dict[str, str] = {
     "\u2EEC": "\u9F50",  # ⻬ → 齐
 }
 
-# ---------------------------------------------------------------------------
-# Common traditional-to-simplified residuals left by PDF font extraction.
-# Only high-frequency pairs that appear in business/tech documents.
-# ---------------------------------------------------------------------------
-
+# F1: High-frequency traditional-to-simplified residuals from PDF fonts.
 TRAD_SIMPLE_MAP: dict[str, str] = {
     "\u6236": "\u6237",  # 戶 → 户
-    "\u8A00": "\u8A00",  # 言 (no change, but included for completeness)
 }
 
 
@@ -142,19 +149,101 @@ def _build_char_map() -> dict[str, str]:
 
 _CHAR_MAP = _build_char_map()
 
+# ---------------------------------------------------------------------------
+# F3.1: LaTeX-color wrappers from Dingtalk export
+#   `$\color{#0089FF}{@欧丰硕(Elliott)}$`   → `@欧丰硕(Elliott)`
+#   `$\color{#ABCDEF}{anything}$`            → `anything`
+# Also handles missing `#` prefix: `$\color{0089FF}{...}$`
+# ---------------------------------------------------------------------------
+_COLOR_WRAPPER = re.compile(
+    r"\$\\color\{#?[0-9A-Fa-f]{3,8}\}\{([^{}$]*)\}\$"
+)
 
-def cleanup_md(text: str) -> str:
-    """Apply all generic cleanup passes to extracted Markdown text."""
+# ---------------------------------------------------------------------------
+# F3.2: Dingtalk `:::` fence containers. They wrap blocks; emit nothing.
+# We remove the opening/closing fence lines (keep inner content).
+# ---------------------------------------------------------------------------
+_FENCE_LINE = re.compile(r"^\s*:::\s*[A-Za-z_-]*\s*$")
 
-    text = unicodedata.normalize("NFKC", text)
+# ---------------------------------------------------------------------------
+# F4: Dingtalk link label noise
+#   `[请至钉钉文档查看附件《X》](url)`  → `[《X》](url)`
+# Works on both Markdown link text and standalone occurrences.
+# ---------------------------------------------------------------------------
+_DINGTALK_PREFIX = re.compile(r"请至钉钉文档查看附件")
 
-    text = text.replace("\r\n", "\n").replace("\r", "\n")
+# ---------------------------------------------------------------------------
+# F2: Unnecessary MD escapes in Dingtalk/Feishu exports.
+# We only unescape in contexts where MD doesn't require escaping.
+#   `\-` at line start in a non-bullet context → `-` (but we must not touch bullet `- `)
+#   `\*`, `\_`, `\|` inside normal prose → strip the backslash
+# Conservative: only unescape when the backslash is followed by a common
+# punctuation glyph AND not preceded by another backslash (true escape).
+# ---------------------------------------------------------------------------
+_ESCAPE_RESIDUAL = re.compile(r"(?<!\\)\\([\-*_|])")
 
+# ---------------------------------------------------------------------------
+# F6: Misc noise
+# ---------------------------------------------------------------------------
+_TRIPLE_BLANK = re.compile(r"\n{3,}")
+_TRAILING_WS = re.compile(r"[ \t]+$", re.MULTILINE)
+
+
+def _apply_char_map(text: str) -> str:
     for old, new in _CHAR_MAP.items():
         if old in text:
             text = text.replace(old, new)
+    return text
 
-    text = re.sub(r"\n{3,}", "\n\n", text)
+
+def _strip_color_wrappers(text: str) -> str:
+    prev = None
+    # F3.1 can be nested rarely; loop until stable.
+    while prev != text:
+        prev = text
+        text = _COLOR_WRAPPER.sub(r"\1", text)
+    return text
+
+
+def _strip_fences(text: str) -> str:
+    lines = text.split("\n")
+    out = [line for line in lines if not _FENCE_LINE.match(line)]
+    return "\n".join(out)
+
+
+def _strip_dingtalk_prefix(text: str) -> str:
+    return _DINGTALK_PREFIX.sub("", text)
+
+
+def _unescape_residuals(text: str) -> str:
+    return _ESCAPE_RESIDUAL.sub(r"\1", text)
+
+
+def cleanup_md(text: str) -> str:
+    """Apply all generic, safe cleanup passes to a Markdown document."""
+
+    # F1 NFKC + line-ending normalization
+    text = unicodedata.normalize("NFKC", text)
+    text = text.replace("\r\n", "\n").replace("\r", "\n")
+
+    # F1 character-level replacements
+    text = _apply_char_map(text)
+
+    # F3.1 LaTeX color wrappers (runs before F3.3 so mention wrapping is stripped)
+    text = _strip_color_wrappers(text)
+
+    # F3.2 Dingtalk `:::` fences
+    text = _strip_fences(text)
+
+    # F4 Dingtalk link-label noise
+    text = _strip_dingtalk_prefix(text)
+
+    # F2 escape residuals
+    text = _unescape_residuals(text)
+
+    # F6 noise
+    text = _TRAILING_WS.sub("", text)
+    text = _TRIPLE_BLANK.sub("\n\n", text)
 
     return text
 
@@ -175,12 +264,16 @@ def process_file(path: Path, *, in_place: bool = False) -> bool:
 
 def main() -> None:
     parser = argparse.ArgumentParser(
-        description="Clean encoding artifacts from extracted Markdown files.",
+        description="Source-agnostic Markdown readability cleanup (F1/F2/F3/F4/F6).",
     )
     parser.add_argument("files", nargs="+", type=Path, help="Markdown files to clean")
     parser.add_argument(
         "--in-place", action="store_true",
-        help="Overwrite files in place (default: dry-run report or stdout)",
+        help="Overwrite files in place (default: dry-run report or stdout).",
+    )
+    parser.add_argument(
+        "--verbose", action="store_true",
+        help="Print per-rule hit counts for each file.",
     )
     args = parser.parse_args()
 

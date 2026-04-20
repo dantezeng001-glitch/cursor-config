@@ -1,15 +1,17 @@
 ---
 name: file-sync
-description: Syncs binary documents (PDF, PPT, PPTX, DOCX, XLSX, XLSM) into Markdown for AI reading, cleans up extraction artifacts (CJK radicals, encoding issues), optimizes MD readability, and converts Markdown back to Word (.docx) or PDF. Installs project-local sync scripts, VS Code tasks, and Cursor rules. Handles OCR for scanned PDFs, per-sheet Markdown for Excel, legacy .ppt conversion on Windows. Use when the user mentions PDF, PPT, PPTX, DOCX, XLSX, XLSM, Excel, spreadsheets, presentations, scanned documents, asks to export Markdown as Word/DOCX/PDF, or asks to clean up / improve readability of extracted Markdown files.
+description: Syncs binary documents (PDF, PPT, PPTX, DOCX, XLSX, XLSM) into Markdown for AI reading, and converts Markdown back to Word (.docx) or PDF. Installs project-local sync scripts, VS Code tasks, and Cursor rules. Handles OCR for scanned PDFs, PDF broken-line joining, per-sheet Markdown for Excel, legacy .ppt conversion on Windows, and final delivery-quality audit. Use when the user mentions PDF, PPT, PPTX, DOCX, XLSX, XLSM, Excel, spreadsheets, presentations, scanned documents, or asks to export Markdown as Word/DOCX/PDF. Post-extraction readability cleanup (encoding residuals, rich-text artifacts, structural rewrites) is delegated to the `md-cleanup` skill.
 ---
 
 # File Sync
 
-Unified skill for binary-document ↔ Markdown conversion and post-processing. Three parts:
+Unified skill for binary-document ↔ Markdown conversion and extraction-specific post-processing. Three parts:
 
 - **Binary → MD**: Sync PDF/PPT/PPTX/DOCX/XLSX/XLSM into readable Markdown
 - **MD → DOCX / PDF**: Convert Markdown files to formatted Word documents or PDF files
-- **MD Post-Processing**: Audit for empty files, OCR re-extract image-based documents, clean encoding artifacts, join broken lines, and optimize readability
+- **Extraction-specific post-processing**: Empty-file OCR re-extraction, PDF broken-line joining, final delivery-quality audit
+
+Generic MD readability cleanup (character-level residuals, rich-text export artifacts, structural rewrites) is **not** done here — it's delegated to the sibling `md-cleanup` skill and invoked automatically at the right step.
 
 ---
 
@@ -17,15 +19,15 @@ Unified skill for binary-document ↔ Markdown conversion and post-processing. T
 
 **任何** binary → MD 转换，无论是用 `tools/file_sync.py` 正式管线、还是临时写的一次性内联脚本，交付给用户前**必须**跑完以下顺序，一步不能跳：
 
-1. Step 0：空页 / 图片页 OCR 重抽（Part C）
-2. Step 1：字符清洗 `md_cleanup.py`（Part C）
-3. Step 1.5：断行合并 `md_line_join.py`（PDF 类来源必做；Part C）
-4. **Step 2：语义重排**（命中触发条件时必做；Part C）
-5. Step 3：最终验证审计（Part C）
+1. **Step 0**：空页 / 图片页 OCR 重抽（Part C）
+2. **md-cleanup 脚本段**：调 `md-cleanup` skill 的 `scripts/md_cleanup.py` 跑 F1 / F2 / F3 / F4 / F6 家族（agent MUST read `~/.cursor/skills/md-cleanup/SKILL.md`）
+3. **Step 1.5**：断行合并 `md_line_join.py`（PDF 类来源必做；Part C）
+4. **md-cleanup AI 段**：按 `md-cleanup/SKILL.md` 的 F5 规则做结构级语义重排（命中触发条件时必做）
+5. **Step 3**：最终验证审计（Part C）
 
-**只做 Step 0 就交付 = 流程违规。** 用户不需要提醒 "可读性高一点"，Step 2 由触发条件决定，不是由用户提醒决定。
+**只做 Step 0 就交付 = 流程违规。** 用户不需要提醒 "可读性高一点"，md-cleanup AI 段由 F5 触发条件决定，不是由用户提醒决定。
 
-内联脚本不是绕过 Part C 的借口——脚本只负责"怎么抽"，后续 5 步一条不能少。
+内联脚本不是绕过这 5 步的借口——脚本只负责"怎么抽"，后续 5 步一条不能少。
 
 ## When To Use
 
@@ -34,8 +36,8 @@ Unified skill for binary-document ↔ Markdown conversion and post-processing. T
 - User wants the sync workflow installed into a new project
 - User asks to export/convert Markdown to Word (.docx) or PDF (.pdf)
 - OCR output needs cleaning (scanned PDFs)
-- Extracted MD has garbled CJK characters, encoding artifacts, or poor readability
-- User asks to "clean up", "reformat", "improve readability", or "整理格式" of an MD file
+
+For generic MD readability cleanup (encoding residuals, Dingtalk/Feishu/Notion export artifacts, heading hierarchy rewrites), the `md-cleanup` skill handles it.
 
 ---
 
@@ -97,7 +99,7 @@ Unified skill for binary-document ↔ Markdown conversion and post-processing. T
 
 6. **Verify**: Check that `index.md` was generated; summarize what was tracked.
 
-7. **→ 进入 Part C，不得直接交付。** Part A 产出的是"抽出来的原始 MD"，不是"可交付的 MD"。Part C 的 Step 0→1→1.5→2→3 是交付前的硬性后处理链，参见文档顶部"交付前硬约束"。
+7. **→ 进入交付前 5 步处理链，不得直接交付。** Part A 产出的是"抽出来的原始 MD"，不是"可交付的 MD"。处理链：Step 0（本文 Part C） → md-cleanup 脚本段 → Step 1.5（本文 Part C） → md-cleanup AI 段 → Step 3（本文 Part C）。参见文档顶部"交付前硬约束"。
 
 ### Operating Rules
 
@@ -227,9 +229,39 @@ Replace `<skill-dir>` with the absolute path to this skill directory.
 
 ---
 
-## Part C: MD Post-Processing (Readability Enhancement)
+## Part C: Extraction-Specific Post-Processing
 
-After binary-to-MD extraction (Part A), the resulting Markdown often contains encoding artifacts, broken lines, and poor readability (flat `## Page N` / `## Slide N:` structure). Part C addresses all problems in order. **Every step is mandatory — do not skip any, and do not wait for user to remind you.**
+After binary-to-MD extraction (Part A), three things are still needed before delivery. **All of them are extraction-specific** and stay in `file-sync`:
+
+- **Step 0** — Empty / image-only files need OCR re-extraction
+- **Step 1.5** — PDF-extracted paragraphs have broken lines that need joining
+- **Step 3** — Final delivery-quality audit
+
+Between Step 0 and Step 1.5, **agent MUST invoke the `md-cleanup` skill's script segment** (F1 / F2 / F3 / F4 / F6). Between Step 1.5 and Step 3, **agent MUST invoke the `md-cleanup` skill's AI segment** if its F5 triggers are hit. See `~/.cursor/skills/md-cleanup/SKILL.md` for the full rule set.
+
+```
+Part A 抽取
+   │
+   ▼
+[Step 0]  空页 / 图片页 OCR 重抽          (file-sync 本地)
+   │
+   ▼
+[md-cleanup 脚本段]  F1/F2/F3/F4/F6 清洗    (md-cleanup skill)
+   │
+   ▼
+[Step 1.5]  PDF 断行合并                  (file-sync 本地，PDF 来源必做)
+   │
+   ▼
+[md-cleanup AI 段]   F5 结构级语义重排     (md-cleanup skill，命中 F5 触发条件时必做)
+   │
+   ▼
+[Step 3]   最终验证审计                   (file-sync 本地)
+   │
+   ▼
+交付用户
+```
+
+**Every step is mandatory — do not skip any, and do not wait for user to remind you.**
 
 ### Step 0: Empty File Audit & OCR Re-extraction
 
@@ -252,31 +284,13 @@ for each .md file:
 
 **This step is NOT optional.** Never deliver empty files to the user. Always attempt OCR before reporting failure.
 
-After fixing empty files, continue with Step 1.
-
-### Step 1: Automatic Character Cleanup
-
-Run the built-in cleanup script on any extracted `.md` file **before** further editing:
+After fixing empty files, **invoke md-cleanup skill's script segment** (see `~/.cursor/skills/md-cleanup/SKILL.md`) before continuing to Step 1.5.
 
 ```bash
-python "<skill-dir>/scripts/md_cleanup.py" "<input.md>" --in-place
+python "~/.cursor/skills/md-cleanup/scripts/md_cleanup.py" <extracted.md files> --in-place
 ```
 
-This fixes:
-
-| Problem | Cause | Fix |
-|---------|-------|-----|
-| CJK Kangxi Radicals (`⼀⽉⾊⾸`) | PDF font CID mappings reference U+2F00 block | Mapped to standard CJK (`一月色首`) |
-| CJK Radicals Supplement (`⻚⻢⻓`) | PDF fonts use U+2E80 block for simplified chars | Mapped to simplified (`页马长`) |
-| Fullwidth/halfwidth mix | Inconsistent source encoding | NFKC normalization |
-| Traditional residuals (`戶`) | PDF font substitution | Common trad-to-simplified pairs |
-| Triple+ blank lines | Extraction artifacts | Compressed to double newlines |
-
-For **batch processing**, pass multiple files:
-
-```bash
-python "<skill-dir>/scripts/md_cleanup.py" *.md --in-place
-```
+This handles character-level residuals (Kangxi radicals, NFKC, trad residuals), rich-text export artifacts, MD escape residuals, and blank-line noise. See md-cleanup/SKILL.md for the full rule matrix (F1–F6).
 
 ### Step 1.5: Broken Line Joining
 
@@ -312,40 +326,24 @@ A file needs line joining when it matches ANY of:
 - PDF-extracted text where paragraphs are visibly broken across multiple short lines
 - User complains about "断句" / "broken lines" / readability issues
 
-**Always run after `md_cleanup.py` and before AI-guided format optimization.**
+**Always run after md-cleanup's script segment and before md-cleanup's AI segment.**
 
-### Step 2: AI-Guided Format Optimization
+### → Invoke md-cleanup skill's AI segment
 
-#### MUST trigger（不是"建议"，是"必须"）
+After Step 1.5, agent **MUST read** `~/.cursor/skills/md-cleanup/SKILL.md` and execute its F5 (structural / semantic) rules if any of these triggers are hit on any output file:
 
-满足以下**任意一条**，agent 必须立即执行本步骤，不得等用户提醒：
+- 3+ `## Page \d+` or `## Slide \d+:` headings (F5.2, most common for file-sync output)
+- All-flat `- ` bullets with no hierarchy (F5.3, flat PPTX extraction)
+- Flat all-`#` heading hierarchy without `##` or deeper (F5.1)
+- Empty section titles (F5.4)
 
-- 文件含 3+ 个 `## Page \d+` 或 `## Slide \d+:` 标题
-- 所有正文行以 `- ` 开头（扁平 PPTX 提取）
-- 用户显式要求 "improve readability" / "reformat" / "整理格式" / "可读性"
+Hitting any trigger = MUST run F5. Not a single trigger hit = skip straight to Step 3.
 
-命中即触发。**不触发任何一条才允许跳过本步骤。**
-
-#### Restructuring Rules
-
-1. **Replace extraction headings with semantic headings** — `## Slide 5: 2024/9/30` becomes `### 直销-官网` based on the slide's actual content
-2. **Reconstruct tables** — When consecutive lines contain structured columnar data (numbers, percentages, labels in a pattern), rebuild as Markdown pipe tables with headers
-3. **Convert flat bullets to hierarchy** — Detect logical grouping (same topic, sub-items) and use nested lists or heading levels
-4. **Bold key metrics** — Wrap standalone percentages, dollar amounts, and conclusion statements in `**bold**`
-5. **Merge multi-page/slide sections** — If slides 6-8 all cover "亚马逊", combine under one `### 亚马逊` heading
-6. **Remove noise** — Delete empty slides (`[No text extracted]`), repeated TOC slides, standalone page numbers, and date stamps that add no information
-7. **NEVER fabricate content** — Do not add data, numbers, analysis, or conclusions not present in the source. When uncertain about a value, keep the original text verbatim
-8. **Run cleanup first** — Always run `md_cleanup.py --in-place` before restructuring to fix encoding artifacts that would interfere with semantic parsing
-
-#### Handling Ambiguous Extractions
-
-- PDF charts/graphs extract as scattered numbers — keep them as-is or note `[chart data]` rather than guessing structure
-- Type3 font artifacts (Latin letters substituted for CJK) are **document-specific** — do not attempt automated fix; flag for user review if detected
-- When table structure is unclear, prefer preserving raw text over constructing a wrong table
+The specific restructuring rules (semantic headings, table reconstruction, bullet hierarchy, etc.) and the "NEVER fabricate content" guardrail all live in md-cleanup's SKILL.md now. Do not duplicate them here.
 
 ### Step 3: Final Validation Audit
 
-After all processing steps (0→1→1.5→2), **scan every output file** and verify it passes ALL checks. This is the last gate before delivering to the user.
+After all 5 processing steps (Step 0 → md-cleanup script → Step 1.5 → md-cleanup AI → here), **scan every output file** and verify it passes ALL checks. This is the last gate before delivering to the user.
 
 ```python
 for each .md file:
@@ -369,7 +367,7 @@ for each .md file:
 | EMPTY | Re-extract with OCR (Step 0) |
 | NO_TEXT | Re-extract with OCR (Step 0) |
 | JUNK | Re-extract with OCR (Step 0) |
-| RAW_HEADINGS | Re-run Step 2 (semantic heading optimization) |
+| RAW_HEADINGS | Re-invoke md-cleanup AI segment (F5.2 semantic heading rewrite) |
 | OCR_GARBAGE | Manually clean: remove single-char junk lines, reconstruct garbled feature lists from context, rebuild spec tables from readable OCR data |
 
 #### Reporting

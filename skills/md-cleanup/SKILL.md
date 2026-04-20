@@ -1,0 +1,218 @@
+---
+name: md-cleanup
+description: Source-agnostic Markdown readability cleanup. Strips rich-text export artifacts (Dingtalk `$\color{}` mentions, `:::` fences, `请至钉钉文档查看附件…` link prefixes), fixes character-level encoding residuals (Kangxi radicals, NFKC, traditional leftovers), unescapes unnecessary MD escapes (`\-` `\*` `\_` `\|`), compresses blank-line noise, and guides semantic structural rewrites (heading hierarchy flattening, `## Page N`/`## Slide N:` to semantic titles). Use when the user asks to clean up / reformat / polish / 清洗 / 整理格式 / 提高可读性 of an MD file, when a Markdown file was just exported from Dingtalk / Feishu / Notion / Google Docs, or immediately after file-sync extraction of PDF/PPT/DOCX/XLSX into MD.
+---
+
+# MD Cleanup
+
+通用 MD 可读性清洗。输入源无关——无论是从 PDF/PPT 抽取出的 MD、钉钉/飞书/Notion/Google Docs 导出的 MD、还是手写 MD 混入了伪影，都按本 skill 的规则处理。
+
+本 skill 与 `file-sync` 的分工：
+
+- `file-sync`：负责二进制文件（PDF/PPT/DOCX/XLSX）→ MD 的抽取，以及抽取特有的后处理（空页 OCR 重抽、PDF 断行合并、最终验证审计）
+- `md-cleanup`（本 skill）：负责通用 MD 表现层清洗，被 `file-sync` 在抽取完成后自动调用，也可独立使用
+
+---
+
+## 何时触发
+
+- 用户说 "清洗 / 整理格式 / 提高可读性 / reformat / clean up / polish"
+- 用户刚从钉钉 / 飞书 / Notion / Google Docs 导出 MD 并拖进项目
+- `file-sync` 在 Part A 抽取完成后（由其 SKILL.md 硬约束调用本 skill）
+- 批量新收到多份伪影明显的 MD 文件
+
+## 执行顺序（强制）
+
+一个完整的 cleanup 交付必须跑完以下两段，一段不能跳：
+
+1. **脚本段**：`python "<skill-dir>/scripts/md_cleanup.py" <files> --in-place`
+   自动处理 F1 / F2 / F3 / F4 / F6 家族（见规则库）
+2. **AI 段**：由 agent 按本文档 F5 规则做语义重排
+   - 命中 F5 触发条件时必做，不命中才允许跳过
+   - 不允许把 F5 的工作甩给用户"再说一声"
+
+**只跑脚本段就交付 = 流程违规。** 用户不需要提醒"再整理一下结构"。
+
+---
+
+## 规则库（按伪影家族组织）
+
+每个家族都带「触发条件 / 处理动作 / Before / After / 谁负责」。**不是每份文件都跑全部规则**，只跑命中触发条件的部分。
+
+### F1 字符级（脚本负责）
+
+| 子规则 | 触发 | 处理 |
+|---|---|---|
+| F1.1 NFKC 归一化 | 始终 | `unicodedata.normalize("NFKC", text)` |
+| F1.2 康熙部首 | 字符 `⼀⽉⾊⾸` 等（U+2F00–U+2FD5） | 映射到标准 CJK `一月色首` |
+| F1.3 CJK 补充部首 | 字符 `⻚⻢⻓` 等（U+2E80–U+2EFF） | 映射到简体 `页马长` |
+| F1.4 传统字残留 | 常见对（如 `戶`→`户`） | 替换 |
+
+常见于 PDF / PPT 抽取后的 MD。钉钉导出一般不触发 F1.2–F1.4。
+
+**NFKC 已知副作用（F1.1）**：会把**全角半角混排**的字符归一化，包括：
+
+- 全角英文字母 / 数字（`Ａ` `１`）→ 半角（`A` `1`）
+- 全角英文标点 `：` `，`（FULLWIDTH COLON / COMMA，U+FF1A / U+FF0C）→ 半角 `:` `,`
+- 全角英文圆括号 `（` `）`（U+FF08 / U+FF09）→ 半角 `(` `)`
+
+中文专有标点 **不会** 被 NFKC 转换：
+
+- 句号 `。`（U+3002）保留
+- 书名号 `《》`、顿号 `、`、引号 `""''` 全部保留
+
+对于抽取出的 MD（全角半角混排常见）这个归一化是合理的。对于**纯手写中文 MD**，用户若希望完全保留中文标点风格（如希望 `：` 不要变 `:`），可跳过 F1：`python md_cleanup.py <file> --in-place` 暂无 `--no-f1` 开关，目前需在脚本源码里注释掉相应调用。后续如有反馈可加 flag。
+
+### F2 转义残留（脚本负责）
+
+| 触发 | 处理 |
+|---|---|
+| 正则 `(?<!\\)\\([\-*_\|])` 命中 | 移除不必要的反斜杠 |
+
+**Before:**
+
+```
+\- 一条列表
+带转义的 \*斜体\* 和 \_下划线\_
+```
+
+**After:**
+
+```
+- 一条列表
+带转义的 *斜体* 和 _下划线_
+```
+
+钉钉、飞书富文本编辑器导出常见。
+
+### F3 富文本导出伪影（脚本负责 F3.1–F3.3，agent 负责 F3.4）
+
+#### F3.1 LaTeX 着色包裹（脚本）
+
+| 触发 | 处理 |
+|---|---|
+| 正则 `\$\\color\{#?[0-9A-Fa-f]{3,8}\}\{([^{}$]*)\}\$` 命中 | 剥离着色保留内容 |
+
+**Before:** `$\color{#0089FF}{@欧丰硕(Elliott)}$`
+**After:** `@欧丰硕(Elliott)`
+
+钉钉导出中的 @ 提及、重点色字都是这种格式。
+
+#### F3.2 `:::` 围栏容器（脚本）
+
+| 触发 | 处理 |
+|---|---|
+| 整行匹配 `^\s*:::\s*[A-Za-z_-]*\s*$` | 删除此行（保留内部内容） |
+
+**Before:**
+
+```
+:::
+IMC/PMO-Elliott
+:::
+```
+
+**After:**
+
+```
+IMC/PMO-Elliott
+```
+
+钉钉块容器（warning / info / 自定义 block）导出都是这种语法。
+
+#### F3.3 组合情况：被着色包裹的提及
+
+F3.1 完成后，`$\color{}{@...}$` 自动变成 `@...`，不需要额外规则。如需进一步把 `@姓名(花名)` 改成 `@花名` 这种口语化表达，属于 F5 范畴（AI 判断）。
+
+#### F3.4 表格单元格内嵌套有序列表（agent 负责，不走脚本）
+
+| 触发 | 处理 |
+|---|---|
+| 表格单元格内出现 `1.  xxx<br>    <br>2.  yyy<br>    <br>3.  zzz` 模式 | agent 手动重写为 `① xxx<br>② yyy<br>③ zzz`，或用分号分隔 |
+
+**为什么脚本不做？** 同时触碰 HTML `<br>` 与 Markdown 表格单元格，自动替换有破坏语义的风险。agent 判断后手动处理。
+
+### F4 链接文案噪音（脚本负责）
+
+| 触发 | 处理 |
+|---|---|
+| 文本出现 `请至钉钉文档查看附件` | 删除此前缀，`《文档名》` 保留 |
+
+**Before:** `[请至钉钉文档查看附件《Swimming IMC 指标追踪》](https://...)`
+**After:** `[《Swimming IMC 指标追踪》](https://...)`
+
+其他家协作文档类似模式（如 Notion 的 "View in Notion"）可按需追加。
+
+### F5 结构级（agent 负责，AI 推理）
+
+脚本不做任何结构调整。以下触发条件任一命中，agent 必须动手：
+
+| 子规则 | 触发 | 处理 |
+|---|---|---|
+| F5.1 全 `#` 一级标题 | 全文 `#` 开头的标题 ≥ 3 个，且没有 `##` 或更深层级 | 按语义重建 H1 / H2 / H3 层级。文档首行顶级标题保持 H1；后续根据内容归属改 H2/H3 |
+| F5.2 抽取伪标题 | 3+ 个 `## Page \d+` 或 `## Slide \d+:` | 用 slide/page 实际内容替换为语义标题（如 `## Slide 5: 2024/9/30` → `### 直销-官网`） |
+| F5.3 扁平 bullets | 正文 90% 以上的行以 `- ` 开头 | 识别逻辑分组，用嵌套列表或标题层级重组 |
+| F5.4 空 section 标题 | 标题下方没有任何内容（下一个标题紧接着出现） | 加占位 `_（待补充）_` 或与前后合并 |
+
+**硬约束：**
+
+- **绝不编造内容。** 不添加原文没有的数据、数字、分析、结论。不确定时原样保留。
+- **先跑脚本段，再做 F5。** F1/F2/F3/F4 清完，F5 判断才准。
+- **跨章节合并要慎重。** 把看似重复的章节合成一节前，先检查两段是否确实是同一主题。
+
+### F6 噪音级（脚本负责）
+
+| 子规则 | 触发 | 处理 |
+|---|---|---|
+| F6.1 多重空行 | 3+ 连续空行 | 压缩为 2 |
+| F6.2 行尾空白 | 任意行末 ` ` 或 `\t` | 删除 |
+| F6.3 `[No text extracted]` 残留 | 孤立的 `[No text extracted]` 行 | 由 file-sync 的 Step 0 负责 OCR 重抽；md-cleanup 本身不删（删了会掩盖问题） |
+
+---
+
+## 使用方法
+
+### 独立使用（用户拖了一份 MD 进来）
+
+```bash
+python "<skill-dir>/scripts/md_cleanup.py" "path/to/file.md" --in-place
+```
+
+`<skill-dir>` = `~/.cursor/skills/md-cleanup/`
+
+批量：
+
+```bash
+python "<skill-dir>/scripts/md_cleanup.py" "dir/*.md" --in-place
+```
+
+脚本跑完，agent 扫一遍文件看 F5 触发条件是否命中，命中则继续做结构重排。
+
+### 被 `file-sync` 自动调用
+
+`file-sync` 在 Part A 抽取完成后，其模板脚本 `template_document_sync.py` / `template_excel_sync.py` 会在 `main()` 末尾 subprocess 调用本 skill 的 `md_cleanup.py`。若本 skill 不存在，file-sync 脚本静默跳过，agent 在 SKILL.md 层手动调用。
+
+### 反例：干净的 MD
+
+- 手写 MD 通常触发不到任何规则，`md_cleanup.py` 会报告 `OK: <filename>` 不改动内容
+- 脚本是幂等的——清洗过的文件再跑一次仍然 `OK`
+
+---
+
+## 规则扩展
+
+发现新的伪影模式时：
+
+1. 先判断归属哪个家族（F1–F6），不要新开家族
+2. 脚本能安全自动化的 → 扩 `scripts/md_cleanup.py`
+3. 需要上下文判断的 → 扩本文档 F5 规则
+4. 把典型样本记录到 `references/artifact-patterns.md`
+
+当前 references 覆盖：钉钉。待扩展：飞书 / Notion / Google Docs / Quip。
+
+---
+
+## Additional Reference
+
+- 各家协作文档的典型伪影样本：[references/artifact-patterns.md](references/artifact-patterns.md)
+- 脚本源码：[scripts/md_cleanup.py](scripts/md_cleanup.py)

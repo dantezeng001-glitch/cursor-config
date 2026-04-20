@@ -4,8 +4,11 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import re
 import shutil
+import subprocess
+import sys
 from datetime import date, datetime, time
 from pathlib import Path, PurePosixPath
 from typing import Any
@@ -355,6 +358,43 @@ def run_sync(project_root: Path) -> list[dict[str, Any]]:
     return manifests
 
 
+def _locate_md_cleanup_script() -> Path | None:
+    """Best-effort lookup for the md-cleanup skill's cleanup script."""
+    candidates: list[Path] = []
+    cursor_home = os.environ.get("CURSOR_HOME")
+    if cursor_home:
+        candidates.append(Path(cursor_home) / "skills" / "md-cleanup" / "scripts" / "md_cleanup.py")
+    candidates.append(Path.home() / ".cursor" / "skills" / "md-cleanup" / "scripts" / "md_cleanup.py")
+    for candidate in candidates:
+        if candidate.is_file():
+            return candidate
+    return None
+
+
+def run_md_cleanup(output_dir: Path) -> None:
+    """Invoke the md-cleanup skill's script on every `.md` under output_dir.
+
+    Best-effort: prints a diagnostic line if md-cleanup is missing, but never
+    raises — the sync itself already succeeded.
+    """
+    script = _locate_md_cleanup_script()
+    if script is None:
+        print("  [md-cleanup] skill not found; skipping post-processing.")
+        return
+
+    md_files = sorted(str(p) for p in output_dir.rglob("*.md"))
+    if not md_files:
+        return
+
+    try:
+        subprocess.run(
+            [sys.executable, str(script), *md_files, "--in-place"],
+            check=False,
+        )
+    except Exception as exc:  # noqa: BLE001
+        print(f"  [md-cleanup] post-processing failed: {exc!r}")
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description="Sync Excel workbooks into Cursor-readable text files.")
     parser.add_argument(
@@ -363,10 +403,21 @@ def main() -> None:
         type=Path,
         help="Project root that contains the Excel files.",
     )
+    parser.add_argument(
+        "--no-cleanup",
+        action="store_true",
+        help="Skip the md-cleanup post-processing step.",
+    )
     args = parser.parse_args()
 
-    manifests = run_sync(args.project_root.resolve())
+    project_root = args.project_root.resolve()
+    manifests = run_sync(project_root)
     print(f"Synced {len(manifests)} workbook(s) into cursor_excel.")
+
+    if not args.no_cleanup:
+        config = load_config(project_root)
+        output_dir = project_root / config["output_dir"]
+        run_md_cleanup(output_dir)
 
 
 if __name__ == "__main__":
