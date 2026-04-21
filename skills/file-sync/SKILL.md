@@ -29,6 +29,8 @@ Generic MD readability cleanup (character-level residuals, rich-text export arti
 
 内联脚本不是绕过这 5 步的借口——脚本只负责"怎么抽"，后续 5 步一条不能少。
 
+**扫读友好度硬指标**：交付前必做一次计算——`MD 行数 ÷ Excel 数据行数 ≤ 3`。比值 ≥ 3 = 抽取格式错（十有八九是 X1 竖排 key-value），必须回去改为表格格式，不得交付。见 `md-cleanup/SKILL.md` 的"交付前扫读友好度自检"。
+
 ## When To Use
 
 - User asks to read, summarize, or analyze a PDF, PPT, PPTX, DOCX, XLSX, or XLSM file
@@ -174,6 +176,21 @@ def safe_ocr_page(page, lang="eng"):
 ### Configuration
 
 Edit `file_sync_config.json` / `document_sync_config.json` / `excel_sync_config.json` to add custom noise patterns, stop markers, or exclude patterns.
+
+### Excel 专项规则（避免 md-cleanup 反复手修）
+
+Excel 抽取天然有四个陷阱，每一个都会让下游 md-cleanup 被迫做 F5.5 手工重排。抽取端就该修好：
+
+| # | 陷阱 | 正确做法 |
+|---|---|---|
+| X1 | **默认输出成竖排 key-value**（每行数据 → 一个 `### 第 N 行` + 一堆 `- 字段: 值`），37 行数据膨胀到 290 行 MD | 每张 sheet 输出**一个 Markdown 表格**：字段做列头，一行数据 = 表格一行。空单元格留空即可 |
+| X2 | **合并单元格没展开**（openpyxl 对合并区的非左上角单元格返回 `None`），"平台"列只在每组首行有值、下面一串空 | 遍历 `ws.merged_cells.ranges`，把左上角值填到整个合并区的每个格子 |
+| X3 | **表头检测被合并横幅顶掉**（row 1 是 `@某某 @备注` 合并成一整行，展开后非空数超过真表头所在 row，得分反超） | 策略改为"**自上而下遍历，首个满足 ≥2 非空 + 唯一度（unique / total） ≥ 0.7 的行即表头**"。合并整行横幅唯一度 = 1/N 必定跳过；普通表头即便有 1–2 个重复列名（如主 KPI + 次 KPI）也能通过 |
+| X4 | **表头单元格含真实 `\n`**（"受众人群\nINT:xx\nRMKT:yy"）直接拼进 `\| ... \|` 把表格撑坏 | 表头也过 `cell_md()`：`\r\n` / `\n` → `<br>`，`\|` → `\\|` |
+
+附加优化：**空占位列剪枝**——列名是 `column_N`（make_headers 给无表头列生成的默认名）且该列数据全空，可安全删除，让表格更窄。
+
+这四条只要抽取端一次到位，md-cleanup 就不用每次都 F5.5 手修。参考实现参见 `md-cleanup/references/artifact-patterns.md` 的 "Excel 抽取" 节 E1–E5。
 
 ---
 

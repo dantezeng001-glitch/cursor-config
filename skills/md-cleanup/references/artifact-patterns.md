@@ -34,6 +34,53 @@
 
 ---
 
+## Excel 抽取（openpyxl / excel_sync.py 默认输出）
+
+来源样例：2026 北美广告命名规范.xlsx（2026-04-20 清洗）
+
+9 张 sheet、合计约 700 条数据行，旧 `excel_sync.py` 输出 key-value 竖排，MD 总行数约 4700；改表格格式后降到约 670 行。
+
+| # | 模式 | 家族 | 样本 | 清洗后 |
+|---|---|---|---|---|
+| E1 | 每行数据被抽成 `### 第 N 行` + 一堆 `- 字段: 值` | F5.5（agent） | 见下方 Before / After | 折叠为单个 Markdown 表格 |
+| E2 | 表格单元格含真实 `\n`（多行表头没转义） | F5.6（agent） | `\| 受众人群\nINT:直接关键词\nRMKT:... \|` | `\| 受众人群<br>INT:直接关键词<br>RMKT:... \|` |
+| E3 | 纯空占位列（列名 `column_N` 且整列为空） | F5.5 剪枝步 | — | 删除该列 |
+| E4 | 合并单元格没展开，平台列只在每组首行有值，其他行为空 | 归 file-sync 抽取层 | `Meta / "" / "" / Google / ""` | file-sync 展开 `ws.merged_cells.ranges` 让每行都有值 |
+| E5 | 表头检测被合并横幅顶掉，数据行被当 header | 归 file-sync 抽取层 | 真表头在 row 2，row 1 是 "@某某 的备注" | file-sync 用"自上而下首个 ≥2 非空 + 唯一度 ≥ 0.7 的行" |
+
+### E1 典型 Before / After
+
+Before（37 行数据 → 290 行 MD）：
+
+```
+### 第 2 行
+
+- `项目类型`: AO
+- `人群/关键词类型`: INT
+- `广告组完整命名`: AO_INT_Collections-Page_test
+
+### 第 3 行
+
+- `项目类型`: Launch
+- `人群/关键词类型`: ASC
+- `广告组完整命名`: Launch_ASC_Pillar-Page-Openear_
+```
+
+After（37 行数据 → 48 行 MD，-83%）：
+
+```
+| 项目类型 | 人群/关键词类型 | 广告组完整命名 |
+|---|---|---|
+| AO | INT | AO_INT_Collections-Page_test |
+| Launch | ASC | Launch_ASC_Pillar-Page-Openear_ |
+```
+
+### 交叉引用
+
+E4 / E5 属于 file-sync 抽取层的缺陷，md-cleanup 能修但每次都手修成本高。永久解决方案见 file-sync/SKILL.md 的 "Excel 已知抽取伪影"。
+
+---
+
 ## 飞书（Feishu / Lark）
 
 _待补充样本。_ 已知可能的模式：
