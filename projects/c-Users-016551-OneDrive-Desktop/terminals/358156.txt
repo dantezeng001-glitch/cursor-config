@@ -1,0 +1,14 @@
+---
+pid: 35684
+cwd: "C:\\Users\\016551\\OneDrive\\Desktop\\科技树\\知识库"
+command: "chcp 65001 > $null; Set-Location 'C:\\Users\\016551\\OneDrive\\Desktop\\科技树\\知识库'; python 脚本\\sync_binary_docs.py"
+started_at: 2026-04-22T06:55:29.297Z
+running_for_ms: 16031    
+---
+✔ 已同步 12 个文件到 同步文档/
+
+---
+exit_code: 0
+elapsed_ms: 20486
+ended_at: 2026-04-22T06:55:49.783Z
+---
