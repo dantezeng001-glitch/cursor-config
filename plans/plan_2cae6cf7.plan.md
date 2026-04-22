@@ -43,7 +43,7 @@ todos:
     status: completed
   - id: dedupe
     content: 处理 3 组疑似重复文件（等你的策略指令）
-    status: in_progress
+    status: completed
   - id: update_idx_md
     content: 处理 目录索引.md（更新路径或合并）
     status: completed
