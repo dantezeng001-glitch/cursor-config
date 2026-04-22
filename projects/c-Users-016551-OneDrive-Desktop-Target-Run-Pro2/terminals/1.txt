@@ -1,10 +1,12 @@
 ---
-pid: 17532
+pid: 9780
 cwd: |
   C:\Users\016551\OneDrive\Desktop\Target Run Pro2
 active_command: |
-  *  Executing task: python tools/watch_excel.py --interval 5
+  *  Executing task: python _sync/tools/watch_excel.py --interval 5
 ---
- *  Executing task: python tools/watch_excel.py --interval 5 
+ *  Executing task: python _sync/tools/watch_excel.py --interval 5 
 
-C:\Program Files\Python312\python.exe: can't open file 'C:\\Users\\016551\\OneDrive\\Desktop\\Target Run Pro2\\tools\\watch_excel.py': [Errno 2] No such file or directory
+C:\Program Files\Python312\python.exe: can't open file 'C:\\Users\\016551\\OneDrive\\Desktop\\Target Run Pro2\\_sync\\tools\\watch_excel.py': [Errno 2] No such file or directory
+
+ *  The terminal process "C:\windows\System32\WindowsPowerShell\v1.0\powershell.exe -Command python _sync/tools/watch_excel.py --interval 5" terminated with exit code: 1.
