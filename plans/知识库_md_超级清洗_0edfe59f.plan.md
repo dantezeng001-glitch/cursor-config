@@ -101,6 +101,6 @@ python "C:\Users\016551\.cursor\skills\md-cleanup\scripts\md_cleanup.py" `
 
 - `脚本/*.py`：Python 源码不在 md-cleanup 范围，不动。
 - `同步文档/*/manifest.json`、`document.json`：file-sync 元数据，不动。
-- `同步文档/*__stale_*` / `_tmp_sync_*`：空目录，不动。
+- `同步文档/*__stale_`* / `_tmp_sync_*`：空目录，不动。
 - 不会覆盖现成的 `cleaned.md`（file-sync 链路产物）。
 

@@ -1,0 +1,13 @@
+---
+pid: 27260
+cwd: "C:\\Users\\016551\\OneDrive\\Desktop\\科技树"
+command: "Start-Sleep -Seconds 2"
+started_at: 2026-04-22T09:42:49.320Z
+running_for_ms: 11066    
+---
+
+---
+exit_code: 0
+elapsed_ms: 12056
+ended_at: 2026-04-22T09:43:01.376Z
+---
