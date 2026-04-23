@@ -46,7 +46,15 @@ Run `Grep` against the target directory with the patterns from `reference.md` (s
 
 ### Step 3. Remediate in place
 
-Use `StrReplace` to modify each hit per its tier. For multi-file changes, batch them and produce a diff summary.
+Use the available edit tool to modify each hit per its tier. For multi-file changes, batch them and produce a diff summary.
+
+Before applying in-place fixes across `>= 2` files, stop once and show:
+
+- tier breakdown (`green/yellow/red`)
+- the top 3 proposed wording changes
+- any unresolved source or ownership question
+
+If the user has only asked for an audit, do not silently remediate. In that case stop at the report and ask whether to apply fixes.
 
 Remediation phrasing templates (with exact examples) are in `reference.md` under "Remediation phrasing pack".
 

@@ -27,6 +27,15 @@ Each paragraph must add a fact / argument / evidence on top of the previous one.
 
 For filler words / hedge words / meta-narration checklist, see `writing-quality.mdc` §1 and §8.
 
+## Hard Stop
+
+If the task touched `>= 2` files and you hit either of the following, stop before定稿并先给用户一个冲突摘要：
+
+- 同一个数字 / 产品名 / 术语在不同文件里出现冲突
+- 出现 `必须 / 不得 / 行业通行 / 最佳实践` 这类权威表述，但没有外部出处
+
+冲突摘要只需要 3 项：`冲突点`、`建议处理方式`、`是否等待确认`。用户没明确拍板前，不要把未证实说法继续传播到其他文件。
+
 ## Self-Check Before Saying "完成" or "Done"
 
 If the task touched ≥ 2 files, pass ALL seven:

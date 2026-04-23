@@ -1,0 +1,22 @@
+timestamp	commit	skill	old_score	new_score	status	dimension	note	eval_mode
+2026-04-23T09:57:52+08:00	baseline	darwin-skill	-	88.7	baseline	6 资源整合度	asset_type=skill; target_path=C:\Users\016551\.cursor\skills\darwin-skill\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	ai-product-manager	-	79.8	baseline	3 边界条件覆盖	asset_type=skill; target_path=C:\Users\016551\.cursor\skills\ai-product-manager\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	content-integrity-guard	-	82.4	baseline	4 检查点设计	asset_type=skill; target_path=C:\Users\016551\.cursor\skills\content-integrity-guard\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	file-sync	-	79.1	baseline	6 资源整合度	asset_type=skill; target_path=C:\Users\016551\.cursor\skills\file-sync\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	md-cleanup	-	84.4	baseline	4 检查点设计	asset_type=skill; target_path=C:\Users\016551\.cursor\skills\md-cleanup\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	pua-motivator	-	59.7	baseline	3 边界条件覆盖	asset_type=skill; target_path=C:\Users\016551\.cursor\skills\pua-motivator\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	create-rule	-	76.6	baseline	3 边界条件覆盖	asset_type=skill; target_path=C:\Users\016551\.cursor\skills-cursor\create-rule\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	create-skill	-	83.1	baseline	4 检查点设计	asset_type=skill; target_path=C:\Users\016551\.cursor\skills-cursor\create-skill\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	create-subagent	-	70.9	baseline	4 检查点设计	asset_type=skill; target_path=C:\Users\016551\.cursor\skills-cursor\create-subagent\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	migrate-to-skills	-	81.7	baseline	4 检查点设计	asset_type=skill; target_path=C:\Users\016551\.cursor\skills-cursor\migrate-to-skills\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	update-cursor-settings	-	67.2	baseline	4 检查点设计	asset_type=skill; target_path=C:\Users\016551\.cursor\skills-cursor\update-cursor-settings\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	openai-docs	-	84.7	baseline	4 检查点设计	asset_type=skill; target_path=C:\Users\016551\.codex\skills\.system\openai-docs\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	plugin-creator	-	78.7	baseline	4 检查点设计	asset_type=skill; target_path=C:\Users\016551\.codex\skills\.system\plugin-creator\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	skill-creator	-	85.8	baseline	4 检查点设计	asset_type=skill; target_path=C:\Users\016551\.codex\skills\.system\skill-creator\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	skill-installer	-	79.9	baseline	4 检查点设计	asset_type=skill; target_path=C:\Users\016551\.codex\skills\.system\skill-installer\SKILL.md; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	content-integrity	-	80.6	baseline	4 检查点设计	asset_type=rule; target_path=C:\Users\016551\.cursor\rules\content-integrity.mdc; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	no-redundant-writing	-	69.9	baseline	1 Frontmatter质量	asset_type=rule; target_path=C:\Users\016551\.cursor\rules\no-redundant-writing.mdc; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	work-in-layers	-	88.6	baseline	1 Frontmatter质量	asset_type=rule; target_path=C:\Users\016551\.cursor\rules\work-in-layers.mdc; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	writing-quality	-	68.9	baseline	1 Frontmatter质量	asset_type=rule; target_path=C:\Users\016551\.cursor\rules\writing-quality.mdc; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	ai-coding-discipline	-	88.0	baseline	2 工作流清晰度	asset_type=rule; target_path=C:\Users\016551\.cursor\rules\ai-coding-discipline.mdc; initial baseline	dry_run
+2026-04-23T09:57:52+08:00	baseline	rule-file-sync	-	78.3	baseline	4 检查点设计	asset_type=rule; target_path=C:\Users\016551\OneDrive\Desktop\科技树\_系统工具\.cursor\rules\file-sync.mdc; initial baseline	dry_run
