@@ -13,8 +13,8 @@ Convert Cursor rules ("Applied intelligently") and slash commands to Agent Skill
 
 | Level | Source | Destination |
 |-------|--------|-------------|
-| Project | `{workspaceFolder}/**/.cursor/rules/*.mdc`, `{workspaceFolder}/.cursor/commands/*.md` |
-| User | `~/.cursor/commands/*.md` |
+| Project | `{workspaceFolder}/**/.cursor/rules/*.mdc`, `{workspaceFolder}/.cursor/commands/*.md` | `{workspaceFolder}/.cursor/skills/<skill-name>/SKILL.md` |
+| User | `~/.cursor/commands/*.md` | `~/.cursor/skills/<skill-name>/SKILL.md` |
 
 Notes:
 - Cursor rules inside the project can live in nested directories. Be thorough in your search and use glob patterns to find them.
@@ -104,7 +104,7 @@ Changes: Add frontmatter with `name` (from filename), `description` (infer from 
 
 ## Workflow
 
-If you have the Task tool available:
+If you have the Subagent tool available:
 DO NOT start to read all of the files yourself. That function should be delegated to the subagents. Your job is to dispatch the subagents for each category of files and wait for the results.
 
 1. [ ] Create the skills directories if they don't exist (`.cursor/skills/` for project, `~/.cursor/skills/` for user)
@@ -113,18 +113,20 @@ DO NOT start to read all of the files yourself. That function should be delegate
   II. [ ] For rules, check if it's an "applied intelligently" rule (has `description`, no `globs`, no `alwaysApply: true`). Commands are always migrated. DO NOT use the terminal to read files. Use the read tool.
   III. [ ] Make a list of files to migrate. If empty, done.
   IV. [ ] For each file, read it, then write the new skill file preserving the body content EXACTLY. DO NOT use the terminal to write these files. Use the edit tool.
-  V. [ ] Delete the original file. DO NOT use the terminal to delete these files. Use the delete tool.
-  VI. [ ] Return a list of all the skill files that were migrated along with the original file paths.
+  V. [ ] Before deleting originals, show the migration list and confirm the user wants cleanup now. If not confirmed, keep originals in place.
+  VI. [ ] Delete the original file only after that confirmation. DO NOT use the terminal to delete these files. Use the delete tool.
+  VII. [ ] Return a list of all the skill files that were migrated along with the original file paths.
 3. [ ] Wait for all subagents to complete and summarize the results to the user. IMPORTANT: Make sure to let them know if they want to undo the migration, to ask you to.
 4. [ ] If the user asks you to undo the migration, do the opposite of the above steps to restore the original files.
 
 
-If you don't have the Task tool available:
+If you don't have the Subagent tool available:
 1. [ ] Create the skills directories if they don't exist (`.cursor/skills/` for project, `~/.cursor/skills/` for user)
 2. [ ] Find files to migrate in both project (`.cursor/`) and user (`~/.cursor/`) directories
 3. [ ] For rules, check if it's an "applied intelligently" rule (has `description`, no `globs`, no `alwaysApply: true`). Commands are always migrated. DO NOT use the terminal to read files. Use the read tool.
 4. [ ] Make a list of files to migrate. If empty, done.
 5. [ ] For each file, read it, then write the new skill file preserving the body content EXACTLY. DO NOT use the terminal to write these files. Use the edit tool.
-6. [ ] Delete the original file. DO NOT use the terminal to delete these files. Use the delete tool.
-7. [ ] Summarize the results to the user. IMPORTANT: Make sure to let them know if they want to undo the migration, to ask you to.
-8. [ ] If the user asks you to undo the migration, do the opposite of the above steps to restore the original files.
+6. [ ] Before deleting originals, show the migration list and confirm the user wants cleanup now. If not confirmed, keep originals in place.
+7. [ ] Delete the original file only after that confirmation. DO NOT use the terminal to delete these files. Use the delete tool.
+8. [ ] Summarize the results to the user. IMPORTANT: Make sure to let them know if they want to undo the migration, to ask you to.
+9. [ ] If the user asks you to undo the migration, do the opposite of the above steps to restore the original files.

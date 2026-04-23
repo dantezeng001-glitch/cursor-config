@@ -1,0 +1,13 @@
+---
+pid: 25244
+cwd: "C:\\Users\\016551\\OneDrive\\Desktop\\科技树\\知识库及前端开发\\前端开发"
+command: "python server.py --host 127.0.0.1 --port 8765"
+started_at: 2026-04-23T03:21:39.580Z
+running_for_ms: 331352   
+---
+
+---
+exit_code: 4294967295
+elapsed_ms: 332589
+ended_at: 2026-04-23T03:27:12.169Z
+---

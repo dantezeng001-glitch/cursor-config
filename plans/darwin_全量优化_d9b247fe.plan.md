@@ -13,13 +13,13 @@ todos:
     status: completed
   - id: optimize-darwin-first
     content: 先优化 darwin-skill 自身，再按低分优先原则推进规则与技能优化
-    status: in_progress
+    status: completed
   - id: run-wave-regressions
     content: 在每轮保留前做 paired 测试与跨规则/跨依赖回归检查
-    status: pending
+    status: completed
   - id: report-and-cards
     content: 汇总最终分数变化、结果日志与结果卡片
-    status: pending
+    status: completed
 isProject: false
 ---
 
