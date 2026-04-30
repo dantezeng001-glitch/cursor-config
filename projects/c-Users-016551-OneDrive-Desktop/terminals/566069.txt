@@ -1,0 +1,13 @@
+---
+pid: 22148
+cwd: "c:\\Users\\016551\\OneDrive\\Desktop\\知识库及前端开发\\前端开发"
+command: "python server.py"
+started_at: 2026-04-30T10:14:29.030Z
+running_for_ms: 96369    
+---
+
+---
+exit_code: 1
+elapsed_ms: 97513
+ended_at: 2026-04-30T10:16:06.543Z
+---

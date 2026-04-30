@@ -1,0 +1,26 @@
+---
+pid: 14788
+cwd: "c:\\Users\\016551\\OneDrive\\Desktop\\知识库及前端开发\\前端开发"
+command: "netstat -ano | findstr :8765"
+started_at: 2026-04-30T10:16:41.266Z
+running_for_ms: 8014     
+---
+  TCP    127.0.0.1:8765         0.0.0.0:0              LISTENING       30736
+  TCP    127.0.0.1:8765         0.0.0.0:0              LISTENING       34940
+  TCP    127.0.0.1:8765         0.0.0.0:0              LISTENING       25308
+  TCP    127.0.0.1:8765         127.0.0.1:52850        TIME_WAIT       0
+  TCP    127.0.0.1:8765         127.0.0.1:52851        TIME_WAIT       0
+  TCP    127.0.0.1:8765         127.0.0.1:52852        TIME_WAIT       0
+  TCP    127.0.0.1:8765         127.0.0.1:52853        TIME_WAIT       0
+  TCP    127.0.0.1:8765         127.0.0.1:52854        TIME_WAIT       0
+  TCP    127.0.0.1:8765         127.0.0.1:52855        TIME_WAIT       0
+  TCP    127.0.0.1:8765         127.0.0.1:60579        TIME_WAIT       0
+  TCP    127.0.0.1:8765         127.0.0.1:60580        TIME_WAIT       0
+  TCP    127.0.0.1:8765         127.0.0.1:60581        TIME_WAIT       0
+  TCP    127.0.0.1:8765         127.0.0.1:60582        TIME_WAIT       0
+
+---
+exit_code: 0
+elapsed_ms: 10549
+ended_at: 2026-04-30T10:16:51.815Z
+---

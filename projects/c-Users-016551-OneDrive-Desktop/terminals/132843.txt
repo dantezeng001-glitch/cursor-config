@@ -1,0 +1,15 @@
+---
+pid: 33576
+cwd: "c:\\Users\\016551\\OneDrive\\Desktop\\知识库及前端开发"
+command: "taskkill /F /PID 30780 2>$null; Start-Sleep -Seconds 1; echo \"done\""
+started_at: 2026-04-30T10:13:38.437Z
+running_for_ms: 8015     
+---
+�ɹ�: ����ֹ PID Ϊ 30780 �Ľ��̡�
+done
+
+---
+exit_code: 0
+elapsed_ms: 11718
+ended_at: 2026-04-30T10:13:50.155Z
+---

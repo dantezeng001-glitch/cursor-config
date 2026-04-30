@@ -1,0 +1,74 @@
+---
+pid: 43864
+cwd: "c:\\Users\\016551\\OneDrive\\Desktop\\知识库及前端开发"
+command: "python 前端开发/scripts/tag_audience_ops.py --apply"
+started_at: 2026-04-30T10:07:22.482Z
+running_for_ms: 15006    
+---
+Found 58 candidate files under C:\Users\016551\OneDrive\Desktop\֪ʶ�⼰ǰ�˿���\֪ʶ��
+  [write] ֪ʶ��/�����ж�/�ڲ�������/�ĵ�У������Ϣͬ��.md
+  [write] ֪ʶ��/�����ж�/�ڲ�������/ͳһ��������֪ʶ�� ���ߵǼ�.md
+  [write] ������/ͬ���ĵ�/2025_���_BHT_����չʾ��_630235b3/2025 ��� BHT ����չʾ��_ԭʼ��ȡ.md
+  [write] ������/ͬ���ĵ�/2026_Marketing_���Թ�ͨ��_8547d395/2026 Marketing ���Թ�ͨ��_ԭʼ��ȡ.md
+  [write] ������/ͬ���ĵ�/AWE-2026_���챨��_f75b5bcc/AWE-2026 ���챨��_ԭʼ��ȡ.md
+  [write] ������/ͬ���ĵ�/index.md
+  [write] ������/ͬ���ĵ�/README.md
+  [write] ������/ͬ���ĵ�/Shokz_Brand_Identity_Guidelines_V3.0_(EN)_1440ad67/Shokz Brand Identity Guidelines V3.0 (EN)_ԭʼ��ȡ.md
+  [write] ������/ͬ���ĵ�/��������_20260427.md
+  [write] ������/�����ĵ�/lint_kb_prompt.md
+  [write] ������/�����ĵ�/log.md
+  [write] ������/�����ĵ�/README.md
+  [write] ������/�����ĵ�/skipped_duplicate_20260430/_skipped_�ظ�/����NT����WBS��/CES��Ŀ����.md
+  [write] ������/�����ĵ�/skipped_duplicate_20260430/_skipped_�ظ�/����NT����WBS��/index.md
+  [write] ������/�����ĵ�/skipped_duplicate_20260430/_skipped_�ظ�/����NT����WBS��/NTԤ���̵㣨10.15�棩.md
+  [write] ������/�����ĵ�/skipped_duplicate_20260430/_skipped_�ظ�/����NT����WBS��/�ؼ��������嵥.md
+  [write] ������/�����ĵ�/skipped_duplicate_20260430/_skipped_�ظ�/����NT����WBS��/����Ӫ��WBS.md
+  [write] ������/�����ĵ�/skipped_duplicate_20260430/_skipped_�ظ�/����NT����WBS��/�ز������嵥.md
+  [write] ������/�����ĵ�/skipped_duplicate_20260430/_skipped_�ظ�/����NT����WBS��/ͨ�ò���.md
+  [write] ������/�����ĵ�/��ƷĿ¼��׼��ӳ��.md
+  [write] ������/�����ĵ�/Ԫ���ݹ淶.md
+  [write] ������/�����ĵ�/������������.md
+  [write] ������/�����ĵ�/�ܱ�/2026-W17.md
+  [write] ������/�����ĵ�/�ܱ�/_ģ��.md
+  [write] ������/�����ĵ�/�ܱ�/README.md
+  [write] ������/�����ĵ�/������鵵�淶.md
+  [write] ������/�����ĵ�/��Ƽ�¼/broken_md_join_applied_20260428_092831.md
+  [write] ������/�����ĵ�/��Ƽ�¼/broken_md_join_dry_run_20260428_092808.md
+  [write] ������/�����ĵ�/��Ƽ�¼/cleanup_audit_2026-04-22.md
+  [write] ������/�����ĵ�/��Ƽ�¼/format_artifact_audit_2026-04-28.md
+  [write] ������/�����ĵ�/��Ƽ�¼/inbox_binary_coverage_audit_2026-04-27.md
+  [write] ������/�����ĵ�/��Ƽ�¼/kb_naming_audit_latest.md
+  [write] ������/�����ĵ�/��Ƽ�¼/kb_naming_migration_checklist.md
+  [write] ������/�����ĵ�/��Ƽ�¼/kb_naming_migration_preview.md
+  [write] ������/�����ĵ�/��Ƽ�¼/kb_naming_review_queue_by_zone.md
+  [write] ������/�����ĵ�/��Ƽ�¼/lint_kb_2026-04-22.md
+  [write] ������/�����ĵ�/��Ƽ�¼/pdf_kerning_fix_applied_20260428_093514.md
+  [write] ������/�����ĵ�/��Ƽ�¼/pdf_kerning_fix_applied_20260428_093540.md
+  [write] ������/�����ĵ�/��Ƽ�¼/pdf_kerning_fix_applied_20260428_093703.md
+  [write] ������/�����ĵ�/��Ƽ�¼/pdf_kerning_fix_dry_run_20260428_093450.md
+  [write] ������/�����ĵ�/��Ƽ�¼/pdf_kerning_fix_dry_run_20260428_093625.md
+  [write] ������/�����ĵ�/��Ƽ�¼/product_directory_confirmation_sheet.md
+  [write] ������/�����ĵ�/��Ƽ�¼/product_directory_migration_impact.md
+  [write] ������/�����ĵ�/��Ƽ�¼/product_directory_reference_plan.md
+  [write] ������/�����ĵ�/��Ƽ�¼/product_directory_rename_map_preview.md
+  [write] ������/�����ĵ�/�ĵ�һ������Ʊ���_v1.md
+  [write] ������/�����ĵ�/�ĵ�һ������Ʊ���_v2.md
+  [write] ������/�����ĵ�/�ĵ�һ������Ʊ���_v3.md
+  [write] ������/�����ĵ�/�ĵ�һ������Ʊ���_v4.md
+  [write] ������/�����ĵ�/ģ��/concept_template.md
+  [write] ������/�����ĵ�/ģ��/decision_template.md
+  [write] ������/�����ĵ�/ģ��/product_claim_template.md
+  [write] ������/�����ĵ�/ģ��/README.md
+  [write] ������/�����ĵ�/ģ��/source_summary_template.md
+  [write] ������/�����ĵ�/��������.md
+  [write] ������/�����ĵ�/�����ظ��ļ�_���ñ���.md
+  [write] ������/�����ĵ�/֪ʶ��ܹ�˵��.md
+  [write] ������/�����ĵ�/��Ŀָ���ĵ�.md
+
+Done. 58 written, 0 skipped.
+
+---
+exit_code: 0
+elapsed_ms: 15906
+ended_at: 2026-04-30T10:07:38.388Z
+---

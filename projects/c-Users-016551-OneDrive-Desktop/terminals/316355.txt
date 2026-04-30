@@ -1,0 +1,15 @@
+---
+pid: 41644
+cwd: "c:\\Users\\016551\\OneDrive\\Desktop\\知识库及前端开发\\前端开发"
+command: "taskkill /F /PID 22148 2>$null; Start-Sleep -Seconds 2; echo \"killed\""
+started_at: 2026-04-30T10:15:59.661Z
+running_for_ms: 8011     
+---
+�ɹ�: ����ֹ PID Ϊ 22148 �Ľ��̡�
+killed
+
+---
+exit_code: 0
+elapsed_ms: 12872
+ended_at: 2026-04-30T10:16:12.533Z
+---

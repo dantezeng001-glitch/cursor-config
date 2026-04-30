@@ -1,0 +1,13 @@
+---
+pid: 40516
+cwd: "c:\\Users\\016551\\OneDrive\\Desktop\\知识库及前端开发\\前端开发"
+command: "python server.py --port 8770"
+started_at: 2026-04-30T10:04:59.934Z
+running_for_ms: 36582    
+---
+
+---
+exit_code: 4294967295
+elapsed_ms: 40484
+ended_at: 2026-04-30T10:05:40.418Z
+---
