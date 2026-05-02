@@ -13,16 +13,16 @@ todos:
     status: completed
   - id: stage4-cleanup
     content: 删除第九节列出的空旧子目录
-    status: in_progress
+    status: completed
   - id: stage4-smoke
     content: 启动 server.py 跑 facets 冲烟，确认 7 类 kb_type 在前端可见
-    status: pending
+    status: completed
   - id: stage5-formatKbType
     content: app.js 的 formatKbType 加 3 个新 kb_type 中文显示
-    status: pending
+    status: completed
   - id: stage5-governance
     content: 同步 README、治理看板、lint 文档与新规范一致
-    status: pending
+    status: completed
 isProject: false
 ---
 
