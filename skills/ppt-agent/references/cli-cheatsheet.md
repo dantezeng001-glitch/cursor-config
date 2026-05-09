@@ -3,6 +3,8 @@
 > 按步骤组织的完整命令手册。执行时用实际路径替换 `SKILL_DIR` / `OUTPUT_DIR` 等变量。
 > 主 agent 进入 Step 0 前必须读取此文件建立接口认知。禁止对任何脚本跑 `--help`。
 
+> **🪟 跨平台适配（重要）**：本文件所有命令以 `python3` 起手，这在 Linux/macOS 自然成立；在 Windows 上 `python3.exe` 通常是 Microsoft Store stub（执行会弹商店窗口而非真解释器）。主 agent 在执行任何命令前**必须先完成 SKILL.md §3.1.5 的 Shell 与 Python 解释器探测**，把所有 `python3` 字面量替换为探测出的 `PYTHON_BIN`（典型值：Linux/macOS 上是 `python3`，Windows 上通常是 `python` 或 `py -3`）。`$SKILL_DIR` 字面量保留不展开（详见 SKILL.md §3.2）。
+
 ---
 
 ## Step 0 采访
