@@ -4,7 +4,7 @@
 
 > 这不是工具备份，是我对 AI 协作怎么用得稳的偏好集合。它解释了：我下达任务时希望 AI 用什么节奏、什么纪律来回应，以及我反复用到的几类工作场景靠哪些 skill 来兜底。
 
-仓库只同步两件东西：**`rules/`**（全局生效的纪律）+ **`skills/`**（按场景触发的能力包）。运行时数据、Cursor 自带内容、本地脚本一律不进库。
+仓库同步三件东西：**`rules/`**（全局生效的纪律）+ **`skills/`**（按场景触发的能力包）+ **`scripts/`**（让这套配置在新机器上一键重建的安装脚本）。运行时数据、Cursor 自带内容、临时备份一律不进库。
 
 ---
 
@@ -75,8 +75,14 @@
 
 ## 不在仓库里的东西
 
-`plans/`、`projects/`、`plugins/`、`scripts/`、`skills-cursor/`（Cursor 内置技能）、`subagents/`、`extensions/`、`ai-tracking/` 是运行时数据或 Cursor 自带内容，不进仓库。`skills/` 下任何 `*.bak-*/` 备份目录也忽略。详见 `.gitignore`。
+`plans/`、`projects/`、`plugins/`、`skills-cursor/`（Cursor 内置技能）、`subagents/`、`extensions/`、`ai-tracking/` 是运行时数据或 Cursor 自带内容，不进仓库。`skills/` 下任何 `*.bak-*/` 备份目录也忽略。详见 `.gitignore`。
 
 ## 自动同步
 
-本地 `scripts/auto-sync.ps1` 由 Windows 计划任务定时跑，commit 后 push 到 `origin/main`。脚本本身不进仓库，只在本机使用。
+`scripts/auto-sync.ps1` 由 Windows 计划任务 `CursorConfigAutoSync` 每 2 小时跑一次，commit 后 push 到 `origin/main`，开机登录时也跑一次。日志在 `~/.cursor/.sync.log`。
+
+**新机器一键恢复：** clone 本仓库到 `%USERPROFILE%\.cursor\`，然后跑
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File "$env:USERPROFILE\.cursor\scripts\install-auto-sync.ps1"
+```

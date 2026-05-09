@@ -1,11 +1,13 @@
 # Ignore everything in .cursor by default
 *
 
-# Allow descending into rules/ and skills/ only
+# Allow descending into rules/, skills/, and scripts/ only
 !rules/
 !rules/**
 !skills/
 !skills/**
+!scripts/
+!scripts/**
 
 # Exclude any timestamped backup folders inside skills/ (e.g. ppt-agent.bak-20260509)
 skills/*.bak-*/
