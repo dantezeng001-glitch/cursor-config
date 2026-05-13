@@ -1,6 +1,0 @@
----
-pid: 31488
-cwd: |
-  C:\Users\016551\OneDrive\Desktop\流程建设\专有名词解释库 for DM&KOL
----
-PS C:\Users\016551\OneDrive\Desktop\流程建设\专有名词解释库 for DM&KOL>
