@@ -7,10 +7,10 @@ todos:
     status: completed
   - id: fabe
     content: 创建 docs/IWE-FABE.md：从 Product Info V3 + SPEC + 官网 listing + Brochure 提取信息，输出 10 行 FABE 大表（中英双语）
-    status: in_progress
+    status: completed
   - id: conflict-check
     content: 交叉校验两份文档的数字/术语一致性，标注所有 awaiting confirmation 项
-    status: pending
+    status: completed
 isProject: false
 ---
 
