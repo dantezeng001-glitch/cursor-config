@@ -1,4 +1,6 @@
-# Sony Style — Page Structures
+# Tech Premium Style — Page Structures
+
+> 近似品牌：Sony
 
 Sony 将品牌叙事和电商转化拆成两套独立系统。
 

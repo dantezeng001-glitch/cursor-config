@@ -1,4 +1,6 @@
-# Bose Product Page — Component Library
+# Sensory Premium Style — Component Library
+
+> 近似品牌：Bose / B&O / Jabra
 
 可复用 HTML 组件片段。每个组件含完整 HTML 结构 + 对应 CSS。
 

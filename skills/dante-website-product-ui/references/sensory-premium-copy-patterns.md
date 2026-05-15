@@ -1,4 +1,6 @@
-# Bose Product Page — Copy Patterns
+# Sensory Premium Style — Copy Patterns
+
+> 近似品牌：Bose / B&O / Jabra
 
 Premium-but-Warm：用第二人称感官词汇包裹技术参数，让高端产品没有距离感。
 

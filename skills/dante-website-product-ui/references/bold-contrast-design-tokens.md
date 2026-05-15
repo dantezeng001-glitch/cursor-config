@@ -1,4 +1,6 @@
-# Beats Product Page — Design Tokens
+# Bold Contrast Style — Design Tokens
+
+> 近似品牌：Beats / Marshall
 
 深色主导、高对比、产品配色驱动。标题字重极粗，数据大字报是核心视觉锤。
 

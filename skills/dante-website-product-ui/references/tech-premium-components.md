@@ -1,4 +1,6 @@
-# Sony Product Page — Component Library
+# Tech Premium Style — Component Library
+
+> 近似品牌：Sony
 
 可复用 HTML 组件片段。每个组件含完整 HTML 结构 + 对应 CSS。
 

@@ -1,4 +1,6 @@
-# Bose Product Page — Design Tokens
+# Sensory Premium Style — Design Tokens
+
+> 近似品牌：Bose / B&O / Jabra
 
 极度克制：黑白灰 + 产品本身颜色。几何无衬线体，大量留白，杂志化编排。
 

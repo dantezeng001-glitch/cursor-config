@@ -1,4 +1,6 @@
-# Bose Product Page — Page Structures
+# Sensory Premium Style — Page Structures
+
+> 近似品牌：Bose / B&O / Jabra
 
 合一页面的"三明治"结构：购买区（上）→ 品牌叙事（中，零 CTA）→ 对比+评论（下），sticky 购买条贯穿全程。
 

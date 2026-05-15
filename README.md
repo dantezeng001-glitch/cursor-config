@@ -36,7 +36,7 @@
 
 ## Part 2 · `skills/` — 我反复要做的几件事
 
-14 个 skill，按用途分四组。
+15 个 skill，按用途分四组。
 
 ### 1. 内容/文档基础设施（每天都用）
 
@@ -58,6 +58,7 @@
 
 | Skill | 我用它做什么 |
 |---|---|
+| `dante-website-product-ui` | **产品官网 HTML 页面生成器**——支持 6 种设计风格（Shokz / Apple / Bold Contrast / Sensory Premium / Tech Premium / Data Spectacle），每种风格配备 design tokens、组件库、文案模式、页面结构模板和骨架 HTML。输入产品 Message House / FABE / 规格书，输出可直接浏览器打开的单 HTML 文件。基于 Shokz / Apple / Beats / Bose / Sony / OPPO / Huawei / Soundcore / Oladance 等 10+ 品牌官网的实际页面分析建模。 |
 | `huashu-design` | 用 HTML 做高保真原型、动画 Demo、设计变体探索。需求模糊时它会先给 3 个差异化方向让我选，避免一上来就锁死风格。 |
 | `frontend-design` | 写"看起来不像 AI 生成"的前端组件、页面、应用。 |
 | `tailwind-design-system` | 用 Tailwind 搭设计系统——design tokens、组件变体、响应式、可访问性。 |

@@ -1,4 +1,6 @@
-# Beats Product Page — Page Structures
+# Bold Contrast Style — Page Structures
+
+> 近似品牌：Beats / Marshall
 
 合体式单页面：购买入口在顶部，营销长卷紧跟其下，一个 URL 完成全部转化 + 叙事。
 

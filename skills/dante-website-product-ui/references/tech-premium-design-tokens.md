@@ -1,4 +1,6 @@
-# Sony Product Page — Design Tokens
+# Tech Premium Style — Design Tokens
+
+> 近似品牌：Sony
 
 80%+ 深色背景的沉浸式影院风格。白色仅用于规格/购买区域。链接蓝和促销红是唯二强调色。
 

@@ -1,4 +1,6 @@
-# Beats Product Page — Component Library
+# Bold Contrast Style — Component Library
+
+> 近似品牌：Beats / Marshall
 
 可复用 HTML 组件片段。每个组件含完整 HTML 结构 + 对应 CSS。
 

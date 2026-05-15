@@ -1,4 +1,6 @@
-# Sony Style — Copy Patterns
+# Tech Premium Style — Copy Patterns
+
+> 近似品牌：Sony
 
 ## Headline 公式
 

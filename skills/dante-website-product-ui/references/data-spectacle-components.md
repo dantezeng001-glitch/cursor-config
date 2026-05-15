@@ -1,4 +1,6 @@
-# Chinese Tech Product Page — Component Library
+# Data Spectacle Style — Component Library
+
+> 近似品牌：OPPO / Huawei / Soundcore / Oladance
 
 可复用 HTML 组件片段。每个组件含完整 HTML 结构 + 对应 CSS。全暗沉浸式，一屏一功能，数据大字报为视觉核心。
 

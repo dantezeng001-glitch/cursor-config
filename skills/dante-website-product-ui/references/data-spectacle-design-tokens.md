@@ -1,4 +1,6 @@
-# Chinese Tech Product Page — Design Tokens
+# Data Spectacle Style — Design Tokens
+
+> 近似品牌：OPPO / Huawei / Soundcore / Oladance
 
 全暗沉浸式底色，白字高对比，产品色是唯一色彩变量。数据大字报数字为所有风格中最大（64-120px）。代表品牌：OPPO、华为、Soundcore、Oladance、Cleer。
 

@@ -1,4 +1,6 @@
-# Beats Product Page — Copy Patterns
+# Bold Contrast Style — Copy Patterns
+
+> 近似品牌：Beats / Marshall
 
 街头自信 + 数据驱动。用最短的句子传递最大的能量。
 

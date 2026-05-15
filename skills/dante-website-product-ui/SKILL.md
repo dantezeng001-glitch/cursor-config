@@ -1,12 +1,12 @@
 ---
 name: dante-website-product-ui
 description: >-
-  生成 6 种品牌设计风格的产品官网 HTML 页面。支持 Shokz / Apple / Beats / Bose / Sony / Chinese Tech 风格，覆盖产品详情页和购买页两种页面类型。输出单 HTML 文件，含完整 CSS，可直接浏览器打开。当用户提到"做产品页"、"做 listing page"、"做购买页"、"做官网页面"、"product page"、"listing page"，或要制作产品 HTML 展示页面时使用。不适用于 PPT（走 dante-shokz-ppt）、邮件/EDM、App 界面。
+  生成 6 种设计风格的产品官网 HTML 页面。按视觉设计语言分类：Shokz / Apple / Bold Contrast / Sensory Premium / Tech Premium / Data Spectacle，覆盖产品详情页和购买页。输出单 HTML 文件，含完整 CSS，可直接浏览器打开。当用户提到"做产品页"、"做 listing page"、"做购买页"、"做官网页面"、"product page"、"listing page"，或要制作产品 HTML 展示页面时使用。不适用于 PPT（走 dante-shokz-ppt）、邮件/EDM、App 界面。
 ---
 
-# 产品官网页面制作（6 种品牌风格）
+# 产品官网页面制作（6 种设计风格）
 
-> 把用户提供的产品资料拼装成一份指定品牌风格的单 HTML 页面。
+> 把用户提供的产品资料拼装成一份指定设计风格的单 HTML 页面。
 
 ---
 
@@ -14,14 +14,14 @@ description: >-
 
 问用户目标风格，或根据产品品牌/定位推荐：
 
-| # | 风格 | 代表品牌 | 视觉调性 | 文案调性 | 页面类型 |
+| # | 风格 | 近似品牌 | 视觉调性 | 文案调性 | 页面类型 |
 |---|------|---------|---------|---------|---------|
 | 1 | **Shokz** | Shokz | 黑白灰主调，品牌橙点缀 | 技术短句 + 价值句，克制 | 详情页 + 购买页（分离） |
-| 2 | **Apple** | Apple / Samsung / Google / LG | 白底 #f5f5f7 为主，深黑段交替 | 诗意双关 + 文字游戏，无感叹号 | 营销页 + 购买页（分离） |
-| 3 | **Beats** | Beats / Marshall | 深色主导，高对比，产品色强调 | 街头自信，口语化短句 | 合体页（购买+营销一体） |
-| 4 | **Bose** | Bose / B&O / Jabra | 极简黑白灰，感官温暖 | 第二人称感官词，效果优先于参数 | 合体页 + sticky 购买条 |
-| 5 | **Sony** | Sony | 80%+ 深色段，tech premium | 三层叙事：情感→技术→量化对比 | 营销页 + 购买页（分离） |
-| 6 | **Chinese Tech** | OPPO / Huawei / Soundcore / Oladance / Cleer | 全暗沉浸，巨型数据 callout | 工程叙事 + 版本号体系，密集脚注 | 合体页（一功能一全屏） |
+| 2 | **Apple** | Apple / Samsung / Google | 白底 #f5f5f7 为主，深黑段交替 | 诗意双关 + 文字游戏，无感叹号 | 营销页 + 购买页（分离） |
+| 3 | **Bold Contrast** | Beats / Marshall | 暗底 + 产品色强对比，高反差 | 街头自信，口语化短句 | 合体页（购买+营销一体） |
+| 4 | **Sensory Premium** | Bose / B&O / Jabra | 极简黑白克制，感官温暖 | 第二人称感官词，效果优先于参数 | 合体页 + sticky 购买条 |
+| 5 | **Tech Premium** | Sony | 80%+ 深色段，tech premium | 三层叙事：情感→技术→量化对比 | 营销页 + 购买页（分离） |
+| 6 | **Data Spectacle** | OPPO / Huawei / Soundcore / Oladance | 全暗沉浸，巨型数据 callout | 工程叙事 + 版本号体系，密集脚注 | 合体页（一功能一全屏） |
 
 **选择后**，读取该风格对应的参考文件（见 §8 索引），按下方工作流执行。
 
@@ -50,10 +50,10 @@ description: >-
 从 §0 表格中选定风格。用户未指定时：
 - Shokz 产品 → 默认 Shokz 风格
 - 用户说"Apple 风格"/"像苹果官网" → Apple
-- 运动/潮流产品 → 推荐 Beats
-- 高端音频/静谧定位 → 推荐 Bose
-- 日系科技 → Sony
-- 中国品牌/参数密集 → Chinese Tech
+- 运动/潮流产品 → 推荐 Bold Contrast
+- 高端音频/静谧定位 → 推荐 Sensory Premium
+- 科技硬核/媒体导向 → 推荐 Tech Premium
+- 参数密集/工程叙事 → 推荐 Data Spectacle
 
 ### Step 1 · 确认页面类型
 
@@ -63,10 +63,10 @@ description: >-
 |------|:---------:|:-----:|:-----:|
 | Shokz | ✓ | ✓ | — |
 | Apple | ✓ | ✓ | — |
-| Beats | — | — | ✓ |
-| Bose | — | — | ✓ |
-| Sony | ✓ | ✓ | — |
-| Chinese Tech | — | — | ✓ |
+| Bold Contrast | — | — | ✓ |
+| Sensory Premium | — | — | ✓ |
+| Tech Premium | ✓ | ✓ | — |
+| Data Spectacle | — | — | ✓ |
 
 ### Step 2 · 收集输入
 
@@ -92,8 +92,8 @@ description: >-
 
 根据产品层级决定 deep-dive section 数量。各风格有不同的 section 数量基准：
 
-| 层级 | Shokz | Apple | Beats | Bose | Sony | Chinese Tech |
-|------|:-----:|:-----:|:-----:|:----:|:----:|:------------:|
+| 层级 | Shokz | Apple | Bold Contrast | Sensory Premium | Tech Premium | Data Spectacle |
+|------|:-----:|:-----:|:-------------:|:---------------:|:------------:|:--------------:|
 | 旗舰 | 12-15 | 10-12 | 12-14 | 10-14 | 10-12 | 15-20 |
 | 中端 | 8-12 | 8-10 | 9-11 | 7-9 | 8-10 | 12-15 |
 | 入门 | 5-8 | 6-8 | 6-8 | 5-7 | 6-8 | 8-12 |
@@ -116,10 +116,10 @@ description: >-
 |------|---------|
 | Shokz | 产品名全大写；headline 符合"短句+句号+价值句"；CTA 按钮胶囊型 30px 圆角 |
 | Apple | Hero 区无 CTA 按钮；正文 max-width ≤700px 居中；深浅段交替；链接蓝 #0066CC |
-| Beats | 购买区在首屏内联；"ADD TO BAG" 全大写；数据大字报带对比基准 |
-| Bose | Sticky 购买条存在；叙事区块零 CTA；BoseCare 加购选项；感官词密集 |
-| Sony | Feature Badges 横排；媒体评价引用块；三层技术叙事完整；30+ 脚注 |
-| Chinese Tech | 巨型数字 callout（64-120px）；版本号术语完整；与上代显性对比；15+ 脚注 |
+| Bold Contrast | 购买区在首屏内联；"ADD TO BAG" 全大写；数据大字报带对比基准 |
+| Sensory Premium | Sticky 购买条存在；叙事区块零 CTA；保修加购选项；感官词密集 |
+| Tech Premium | Feature Badges 横排；媒体评价引用块；三层技术叙事完整；30+ 脚注 |
+| Data Spectacle | 巨型数字 callout（64-120px）；版本号术语完整；与上代显性对比；15+ 脚注 |
 
 ---
 
@@ -138,25 +138,25 @@ description: >-
 - **字号**：Display 64-96px，正文 max-width 700px 居中
 - **CTA**：蓝色文字链 "Learn more >" + "Buy"，Hero 区无按钮
 
-### Beats
+### Bold Contrast（近似 Beats / Marshall）
 
 - **颜色**：深色背景主导，产品色作强调色
 - **购买区**：内联首屏，"ADD TO BAG" 全大写
 - **数据大字报**：每个核心卖点配一个数字锚点，必带对比基准
 
-### Bose
+### Sensory Premium（近似 Bose / B&O）
 
 - **颜色**：极简黑白灰，无品牌强调色
 - **结构**：三明治——购买 → 叙事（零 CTA）→ 购买
-- **购买条**：Sticky 底部条贯穿全程；BoseCare 保修加购
+- **购买条**：Sticky 底部条贯穿全程；保修加购选项
 
-### Sony
+### Tech Premium（近似 Sony）
 
 - **颜色**：80%+ 深色段，仅 Specs/购买面板用白底
 - **Feature Badges**：横向滚动徽章栏，8-10 个卖点
 - **叙事**：三层——情感钩子 → 技术实体 → 量化对比（点名前代型号）
 
-### Chinese Tech
+### Data Spectacle（近似 OPPO / Huawei / Soundcore / Oladance）
 
 - **颜色**：全暗沉浸，产品本身是唯一色彩来源
 - **数字**：巨型 callout（64-120px），对比型/绝对型/换算型
@@ -175,19 +175,19 @@ description: >-
 
 文字游戏必备（双关/押韵/引用）— "Unmake some noise." / "Charges fast. And lasts."
 
-### Beats Headline
+### Bold Contrast Headline
 
 反差对比 + 口语化 — "Looks tiny. Sounds huge." / "Apple or Android? Yes."
 
-### Bose Headline
+### Sensory Premium Headline
 
 感官祈使句 — "Sink deeper into sound" / "A hug for your ears"
 
-### Sony Headline
+### Tech Premium Headline
 
 短句宣言对 — "Beyond quiet. Transcendent sound." / "7x faster. Flawless control."
 
-### Chinese Tech Headline
+### Data Spectacle Headline
 
 技术名 + 感性承诺 — "Ultralight Diaphragms Immerse You in Deep Bass"
 
@@ -197,12 +197,12 @@ description: >-
 
 ## 5. 购买元素差异
 
-| 维度 | Shokz | Apple | Beats | Bose | Sony | Chinese Tech |
-|------|-------|-------|-------|------|------|-------------|
-| 主 CTA | Add to Cart | Buy | ADD TO BAG | Add to Cart | ADD TO CART | Buy Now / Add to Cart |
+| 维度 | Shokz | Apple | Bold Contrast | Sensory Premium | Tech Premium | Data Spectacle |
+|------|-------|-------|---------------|-----------------|--------------|----------------|
+| 主 CTA | Add to Cart | Buy | ADD TO BAG | Add to Cart | ADD TO CART | Buy Now |
 | 价格位置 | Hero 面板 | 产品卡片 | Hero 面板 | Hero 面板 | 购买面板 | Hero 或顶部 |
 | 色彩选择 | 色块 swatch | 色块圆点 | 色板 swatch | 色块 swatch | 色块+标签 | 色块 swatch |
-| 保修加购 | — | — | — | BoseCare 3 档 | — | — |
+| 保修加购 | — | — | — | 保修 3 档 | — | — |
 | 分期信息 | — | 月供 + 分期 | — | Afterpay | Affirm 0% APR | — |
 
 ---
@@ -213,10 +213,10 @@ description: >-
 |------|---------|------|
 | Shokz | 本品 vs 同系列次一级 | 2-3 |
 | Apple | 同品类全线 + "Currently viewing" | 2-4 |
-| Beats | 无内置对比表 | — |
-| Bose | 同品类 2-3 款 + 行分组 | 2-3 |
-| Sony | 品类页三列对比，仅关键差异 | 3 |
-| Chinese Tech | 自家产品线横向对比 | 4-6 |
+| Bold Contrast | 无内置对比表 | — |
+| Sensory Premium | 同品类 2-3 款 + 行分组 | 2-3 |
+| Tech Premium | 品类页三列对比，仅关键差异 | 3 |
+| Data Spectacle | 自家产品线横向对比 | 4-6 |
 
 ---
 
@@ -253,43 +253,43 @@ description: >-
 | [apple-marketing-skeleton.html](assets/apple-marketing-skeleton.html) | 营销页骨架 |
 | [apple-buy-skeleton.html](assets/apple-buy-skeleton.html) | 购买页骨架 |
 
-### Beats
+### Bold Contrast（近似 Beats / Marshall）
 
 | 文件 | 内容 |
 |------|------|
-| [beats-design-tokens.md](references/beats-design-tokens.md) | 深色主导配色 / 粗体字重系统 |
-| [beats-components.md](references/beats-components.md) | 购买区 / 数据大字报 / 视频 Tab / 引用卡片 |
-| [beats-copy-patterns.md](references/beats-copy-patterns.md) | 反差对比句 / 口语化语气 / 数据锚点 |
-| [beats-page-structures.md](references/beats-page-structures.md) | 合体页结构（购买头 + 营销体） |
-| [beats-product-page-skeleton.html](assets/beats-product-page-skeleton.html) | 合体页骨架 |
+| [bold-contrast-design-tokens.md](references/bold-contrast-design-tokens.md) | 深色主导配色 / 粗体字重系统 |
+| [bold-contrast-components.md](references/bold-contrast-components.md) | 购买区 / 数据大字报 / 视频 Tab / 引用卡片 |
+| [bold-contrast-copy-patterns.md](references/bold-contrast-copy-patterns.md) | 反差对比句 / 口语化语气 / 数据锚点 |
+| [bold-contrast-page-structures.md](references/bold-contrast-page-structures.md) | 合体页结构（购买头 + 营销体） |
+| [bold-contrast-product-page-skeleton.html](assets/bold-contrast-product-page-skeleton.html) | 合体页骨架 |
 
-### Bose
-
-| 文件 | 内容 |
-|------|------|
-| [bose-design-tokens.md](references/bose-design-tokens.md) | 极简黑白灰 / 几何无衬线体 |
-| [bose-components.md](references/bose-components.md) | Feature Pills / Sticky Cart / 叙事长卷 / BoseCare |
-| [bose-copy-patterns.md](references/bose-copy-patterns.md) | 感官第二人称 / 效果优先 / 温暖技术语言 |
-| [bose-page-structures.md](references/bose-page-structures.md) | 三明治结构（购买→叙事→购买） |
-| [bose-product-page-skeleton.html](assets/bose-product-page-skeleton.html) | 合体页骨架 |
-
-### Sony
+### Sensory Premium（近似 Bose / B&O）
 
 | 文件 | 内容 |
 |------|------|
-| [sony-design-tokens.md](references/sony-design-tokens.md) | 80%+ 深色 / SST 字体回退栈 |
-| [sony-components.md](references/sony-components.md) | Feature Badges / 媒体引用 / 工程师证言 / 三层叙事 |
-| [sony-copy-patterns.md](references/sony-copy-patterns.md) | 短句宣言对 / 技术三层叙事 / 媒体评价格式 |
-| [sony-page-structures.md](references/sony-page-structures.md) | 营销页 + 购买页分离结构 |
-| [sony-marketing-skeleton.html](assets/sony-marketing-skeleton.html) | 营销页骨架 |
-| [sony-buy-skeleton.html](assets/sony-buy-skeleton.html) | 购买页骨架 |
+| [sensory-premium-design-tokens.md](references/sensory-premium-design-tokens.md) | 极简黑白灰 / 几何无衬线体 |
+| [sensory-premium-components.md](references/sensory-premium-components.md) | Feature Pills / Sticky Cart / 叙事长卷 / 保修加购 |
+| [sensory-premium-copy-patterns.md](references/sensory-premium-copy-patterns.md) | 感官第二人称 / 效果优先 / 温暖技术语言 |
+| [sensory-premium-page-structures.md](references/sensory-premium-page-structures.md) | 三明治结构（购买→叙事→购买） |
+| [sensory-premium-product-page-skeleton.html](assets/sensory-premium-product-page-skeleton.html) | 合体页骨架 |
 
-### Chinese Tech
+### Tech Premium（近似 Sony）
 
 | 文件 | 内容 |
 |------|------|
-| [chinese-tech-design-tokens.md](references/chinese-tech-design-tokens.md) | 全暗沉浸 / 巨型数字字号 / 全屏 section |
-| [chinese-tech-components.md](references/chinese-tech-components.md) | 巨型 Callout / 对比条 / 版本徽章 / 认证栏 |
-| [chinese-tech-copy-patterns.md](references/chinese-tech-copy-patterns.md) | 工程叙事 / 版本号命名 / 前代对比 / 密集脚注 |
-| [chinese-tech-page-structures.md](references/chinese-tech-page-structures.md) | 一功能一全屏合体页结构 |
-| [chinese-tech-product-page-skeleton.html](assets/chinese-tech-product-page-skeleton.html) | 合体页骨架 |
+| [tech-premium-design-tokens.md](references/tech-premium-design-tokens.md) | 80%+ 深色 / SST 字体回退栈 |
+| [tech-premium-components.md](references/tech-premium-components.md) | Feature Badges / 媒体引用 / 工程师证言 / 三层叙事 |
+| [tech-premium-copy-patterns.md](references/tech-premium-copy-patterns.md) | 短句宣言对 / 技术三层叙事 / 媒体评价格式 |
+| [tech-premium-page-structures.md](references/tech-premium-page-structures.md) | 营销页 + 购买页分离结构 |
+| [tech-premium-marketing-skeleton.html](assets/tech-premium-marketing-skeleton.html) | 营销页骨架 |
+| [tech-premium-buy-skeleton.html](assets/tech-premium-buy-skeleton.html) | 购买页骨架 |
+
+### Data Spectacle（近似 OPPO / Huawei / Soundcore / Oladance）
+
+| 文件 | 内容 |
+|------|------|
+| [data-spectacle-design-tokens.md](references/data-spectacle-design-tokens.md) | 全暗沉浸 / 巨型数字字号 / 全屏 section |
+| [data-spectacle-components.md](references/data-spectacle-components.md) | 巨型 Callout / 对比条 / 版本徽章 / 认证栏 |
+| [data-spectacle-copy-patterns.md](references/data-spectacle-copy-patterns.md) | 工程叙事 / 版本号命名 / 前代对比 / 密集脚注 |
+| [data-spectacle-page-structures.md](references/data-spectacle-page-structures.md) | 一功能一全屏合体页结构 |
+| [data-spectacle-product-page-skeleton.html](assets/data-spectacle-product-page-skeleton.html) | 合体页骨架 |

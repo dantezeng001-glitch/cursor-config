@@ -1,4 +1,6 @@
-# Chinese Tech Style — Copy Patterns
+# Data Spectacle Style — Copy Patterns
+
+> 近似品牌：OPPO / Huawei / Soundcore / Oladance
 
 基于 OPPO / Huawei / Soundcore / Oladance 跨品牌提取的共性文案模式。
 
